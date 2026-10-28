@@ -45,7 +45,7 @@ function App() {
         )}
         
         {error && (
-          <div style={{ marginTop: '20px', padding: '10px', background: '#ffebee', color: 'red' }}>
+          <div style={{ marginTop: '60px', padding: '10px', background: '#ffebee', color: 'red' }}>
             <h3>Error:</h3>
             <p>{error}</p>
           </div>
