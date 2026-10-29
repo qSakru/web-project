@@ -1,4 +1,3 @@
-```markdown
 # Vaatimusmäärittely – Webprojekti
 
 | Kenttä         | Arvo            |
@@ -28,12 +27,12 @@ Kehittää verkkosovellus elokuvanharrastajille, jossa kaverukset voivat liitty�
 | FR-03  | TMDB (The Movie Database) -tietokantaa voi käyttää elokuvien perustietojen hakemiseen             | **SHOULD**   |
 | FR-04  | Sivua voi käyttää myös ilman kirjautumista                                                        | **MUST**     |
 | FR-05  | Sivusto toimii myös puhelimella (responsiivinen)                                                  | **SHOULD**   |
-| FR-06  | Monipuolinen hakutoiminto (esim. nimen tai vuosiluvun perusteella). Haku voi myös ehdottaa nimeä | **MUST**     |
+| FR-06  | Monipuolinen hakutoiminto (esim. nimen tai vuosiluvun perusteella). Haku voi myös ehdottaa nimeä  | **MUST**     |
 | FR-07  | Tapa löytää muita ryhmiä                                                                          | **MUST**     |
 | FR-08  | Ryhmien ylläpito                                                                                  | **MUST**     |
 | FR-09  | Ryhmän ylläpitäjä hyväksyy ryhmään liittyjät                                                      | **MUST**     |
 | FR-10  | Ryhmässä viestittelymahdollisuus / keskustelualusta                                               | **MUST**     |
-| FR-11  | Mahdollisuus arvostella elokuvia tähdillä (1–5) ja tekstillä, joko ryhmän sisäisesti tai julkisesti | **MUST**  |
+| FR-11  | Mahdollisuus arvostella elokuvia tähdillä(1–5) ja tekstillä, joko ryhmän sisäisesti tai julkisesti| **MUST**     |
 | FR-12  | Toivelista elokuvista, joita käyttäjä haluaa katsoa                                               | **MUST**     |
 | FR-13  | Vakiolista klassikkoelokuvista                                                                    | **MUST**     |
 | FR-14  | Linkin listoihin voi jakaa kaikille                                                               | **MUST**     |
@@ -52,4 +51,3 @@ Kehittää verkkosovellus elokuvanharrastajille, jossa kaverukset voivat liitty�
 - **MUST** = Pakollinen vaatimus  
 - **SHOULD** = Suositeltava vaatimus  
 - **COULD** = Mahdollinen / myöhemmin toteutettava vaatimus
-```
