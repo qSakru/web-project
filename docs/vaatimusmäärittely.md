@@ -14,7 +14,7 @@
 Asiakkaalla on ollut elokuvaharrastustoimintaa kavereiden kanssa, mutta harrastus vaikeutui, kun kaverit muuttivat eri paikkakunnille. Nykyisin he ehdottavat elokuvia toisilleen WhatsApp-viesteillä.
 
 **Tavoite:**  
-Kehittää verkkosovellus elokuvanharrastajille, jossa kaverukset voivat liittyä ryhmiin ja jakaa elokuvia keskenään.
+Kehittää verkkosovellus elokuvaharrastajille, jossa kaverukset voivat liittyä ryhmiin ja jakaa elokuva-arvosteluja, keskustella ja hakea elokuvia.
 
 ---
 
@@ -43,6 +43,9 @@ Kehittää verkkosovellus elokuvanharrastajille, jossa kaverukset voivat liitty�
 | FR-19  | Suomen kieli                                                                                      | **MUST**     |
 | FR-20  | Englanti ja ruotsi                                                                                | **COULD**    |
 | FR-21  | Törkyviestit voidaan poistaa                                                                      | **SHOULD**   |
+| FR-22  | Rekisteröityminen (käyttäjätunnus + sähköp. + salasana)                                           | **MUST**     |
+| FR-23  | Omien arvosteluiden muokkaus                                                                      | **SHOULD**   |
+| FR-24  | Elokuvateattereiden tarjonta sivustolle esim. finnkino                                            | **COULD**    |
 
 ---
 
