@@ -4,9 +4,9 @@
 Verkkosovellus elokuvanharrastajille. Sovelluksessa ryhmät voivat jakaa, kommentoida ja antaa palautetta katsomistaan elokuvista yksityisesti ja julkisesti.
 
 ## Scrum-tiimi ja työskentelytavat
-- Product Owner: [nimi]
-- Scrum Master: [nimi]
-- Kehittäjät: [nimet]
+- Product Owner: [???]
+- Scrum Master: [Sakaria Poutiainen]
+- Kehittäjät: [Sakaria Poutiainen, Niklas Soppela ja Tommi Savela]
 - Sprintin pituus: 1 viikko
 
 ## Dokumentit
