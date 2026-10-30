@@ -36,18 +36,111 @@ Verkkosovellus, jossa käyttäjät voivat muodostaa ryhmiä, jakaa ja arvostella
 - **TMDB API:** Elokuvien perustiedot ja haku
 - **Finnkino API** (ehkä): Teatteritarjonta
 
+**KESKENERÄINEN FLOWCHART**
 
 ```mermaid
-flowchart LR
-    subgraph StudentDevice["Asiakkaan laite"]
-        UserInterface["Elokuvasovelluksen käyttöliittymä"]
+flowchart TB
+    %% Käyttäjät
+    subgraph Users["Käyttäjät"]
+        Guest["Vierailija<br/>(ei kirjautunut)"]
+        User["Kirjautunut käyttäjä"]
+        Admin["Ryhmän ylläpitäjä"]
     end
 
-    subgraph ServiceEnvironment["Palveluympäristö"]
-        RegistryService["Rekisteri"]
+    %% Frontend
+    subgraph Frontend["Frontend – React"]
+        direction TB
+        UI["React-sovellus<br/>• Responsiivinen<br/>• Suomi (+Enkku/Ruotsi?)<br/>• Haku + ehdotukset<br/>• Etusivu, ryhmät, listat"]
+        AuthUI["Kirjautuminen / Rekisteröityminen"]
+        GroupUI["Ryhmänäkymät<br/>• Keskustelu<br/>• Arvostelut<br/>• Jäsenhyväksynnät"]
+        MovieUI["Elokuvanäkymät<br/>• Arvostelut (1–5★ + teksti)<br/>• Toivelista<br/>• Klassikkolistat<br/>• Jakolinkit"]
     end
 
-    UserInterface <-->|"Verkkoyhteys"| RegistryService
+    %% Backend
+    subgraph Backend["Backend – Express"]
+        direction TB
+        API["Express API<br/>(REST)"]
+        Auth["Autentikointi<br/>(???)"]
+        GroupService["Ryhmäpalvelu<br/>• Luonti, ylläpito<br/>• Liittymispyynnöt + hyväksyntä<br/>• Keskustelu / viestit"]
+        ReviewService["Arvostelu- & Listapalvelu<br/>• Julkiset & ryhmän sisäiset arvostelut<br/>• Toivelistat & klassikot<br/>• Muokkaus"]
+        SearchService["Hakupalvelu<br/>• Nimi, vuosi, ehdotukset"]
+        Moderation["Moderointi<br/>• Törkyviestien poisto"]
+        Recommend["Suosittelu & Tilastot<br/>(COULD)"]
+    end
+
+    %% Tietokanta
+    subgraph Database["Tietokanta – PostgreSQL"]
+        UsersDB[(Käyttäjät)]
+        GroupsDB[(Ryhmät + jäsenet)]
+        MoviesDB[(Elokuvat + metatiedot)]
+        ReviewsDB[(Arvostelut)]
+        ListsDB[(Toivelistat & klassikot)]
+        MessagesDB[(Keskusteluviestit)]
+    end
+
+    %% Azure & GitHub
+    subgraph Cloud["Azure + GitHub"]
+        Azure["Azure<br/>• App Service / Container Apps<br/>• Azure Database for PostgreSQL<br/>"]
+        GitHub["GitHub<br/>• Lähdekoodi<br/>• CI/CD"]
+    end
+
+    %% Ulkoiset palvelut
+    subgraph External["Ulkoiset palvelut"]
+        TMDB["TMDB API<br/>Elokuvien perustiedot"]
+        Finnkino["Finnkino API<br/>(COULD)"]
+    end
+
+    %% Tiedonkulku
+    Guest --> UI
+    User --> UI
+    Admin --> UI
+
+    UI --> API
+    AuthUI --> Auth
+    GroupUI --> GroupService
+    MovieUI --> ReviewService
+    UI --> SearchService
+
+    API --> Auth
+    API --> GroupService
+    API --> ReviewService
+    API --> SearchService
+    API --> Moderation
+    API --> Recommend
+
+    Auth --> UsersDB
+    GroupService --> GroupsDB
+    GroupService --> MessagesDB
+    ReviewService --> ReviewsDB
+    ReviewService --> ListsDB
+    ReviewService --> MoviesDB
+    SearchService --> MoviesDB
+    Moderation --> MessagesDB
+    Recommend --> ReviewsDB
+
+    SearchService -.-> TMDB
+    ReviewService -.-> TMDB
+    Recommend -.-> Finnkino
+
+    Backend --> Azure
+    Database --> Azure
+    Frontend --> Azure
+    GitHub --> Azure
+
+    %% Tyylit
+    classDef frontend fill:#e1f5fe,stroke:#01579b,color:#000000
+    classDef backend fill:#f3e5f5,stroke:#4a148c,color:#000000
+    classDef db fill:#e8f5e9,stroke:#1b5e20,color:#000000
+    classDef external fill:#fff3e0,stroke:#e65100,color:#000000
+    classDef user fill:#fce4ec,stroke:#880e4f,color:#000000
+    classDef cloud fill:#e3f2fd,stroke:#0d47a1,color:#000000
+
+    class UI,AuthUI,GroupUI,MovieUI frontend
+    class API,Auth,GroupService,ReviewService,SearchService,Moderation,Recommend backend
+    class UsersDB,GroupsDB,MoviesDB,ReviewsDB,ListsDB,MessagesDB db
+    class TMDB,Finnkino external
+    class Guest,User,Admin user
+    class Azure,GitHub cloud
 ```
 **KIRJAUTUMINEN**
 
