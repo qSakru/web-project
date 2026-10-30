@@ -27,7 +27,8 @@ function App() {
 
   return (
     <>
-      <h1>Docker Sample</h1>
+<h1> Hello world</h1>
+    {/*  <h1>Docker Sample testi 123</h1>
       <div className="card">
         {loading && <p>Loading...</p>}
         
@@ -51,6 +52,7 @@ function App() {
           </div>
         )}
       </div>
+*/}
     </>
   )
 }
