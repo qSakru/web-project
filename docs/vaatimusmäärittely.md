@@ -20,33 +20,33 @@ Kehittää verkkosovellus elokuvaharrastajille, jossa kaverukset voivat liittyä
 
 ## 2. Toiminnalliset vaatimukset
 
-| ID     | Vaatimus                                                                                          | Prioriteetti |
-|--------|---------------------------------------------------------------------------------------------------|--------------|
-| FR-01  | Elokuvat näkyvät etusivulla                                                                       | **MUST**     |
-| FR-02  | Käyttäjä voi luoda ryhmiä                                                                         | **MUST**     |
-| FR-03  | TMDB (The Movie Database) -tietokantaa voi käyttää elokuvien perustietojen hakemiseen             | **SHOULD**   |
-| FR-04  | Sivua voi käyttää myös ilman kirjautumista                                                        | **MUST**     |
-| FR-05  | Sivusto toimii myös puhelimella (responsiivinen)                                                  | **SHOULD**   |
-| FR-06  | Monipuolinen hakutoiminto (esim. nimen tai vuosiluvun perusteella). Haku voi myös ehdottaa nimeä  | **MUST**     |
-| FR-07  | Tapa löytää muita ryhmiä                                                                          | **MUST**     |
-| FR-08  | Ryhmien ylläpito                                                                                  | **MUST**     |
-| FR-09  | Ryhmän ylläpitäjä hyväksyy ryhmään liittyjät                                                      | **MUST**     |
-| FR-10  | Ryhmässä viestittelymahdollisuus / keskustelualusta                                               | **MUST**     |
-| FR-11  | Törkyviestit voidaan poistaa                                                                      | **SHOULD**   |
-| FR-12  | Ryhmän ylläpitäjä voi poistaa henkilöitä ryhmästä                                                 | **MUST**     |
-| FR-13  | Ylläpito-oikeuksien hallinta                                                                      | **MUST**     |
-| FR-14  | Mahdollisuus arvostella elokuvia tähdillä(1–5) ja tekstillä, joko ryhmän sisäisesti tai julkisesti| **MUST**     |
-| FR-15  | Listoja elokuvista, esimerkiksi toive / vakiolista                                                | **MUST**     |
-| FR-16  | Linkin listoihin voi jakaa kaikille                                                               | **MUST**     |
-| FR-17  | Sivu ehdottaa käyttäjälle muita ryhmiä                                                            | **COULD**    |
-| FR-18  | Kirjautuminen (käyttäjätunnus + salasana) hyvällä tietoturvalla                                   | **MUST**     |
-| FR-19  | Suosituksia elokuvista viimeisimpien arvostelujen perusteella                                     | **COULD**    |
-| FR-20  | Tilastoja: mitä ihmiset ovat katsoneet ja mistä he tykkäävät                                      | **COULD**    |
-| FR-21  | Suomen kieli                                                                                      | **MUST**     |
-| FR-22  | Englanti ja ruotsi                                                                                | **COULD**    |
-| FR-23  | Rekisteröityminen (käyttäjätunnus + sähköp. + salasana)                                           | **MUST**     |
-| FR-24  | Omien arvosteluiden muokkaus                                                                      | **SHOULD**   |
-| FR-25  | Elokuvateattereiden tarjonta sivustolle esim. finnkino                                            | **COULD**    |
+| ID    | Vaatimus                                                                                           | Prioriteetti |
+|-------|----------------------------------------------------------------------------------------------------|--------------|
+| FR-01 | Elokuvat näkyvät etusivulla                                                                        | **MUST**     |
+| FR-02 | Käyttäjä voi luoda ryhmiä                                                                          | **MUST**     |
+| FR-03 | Sivua voi käyttää myös ilman kirjautumista                                                         | **MUST**     |
+| FR-04 | Sivusto toimii myös puhelimella (responsiivinen)                                                   | **MUST**     |
+| FR-05 | Monipuolinen hakutoiminto (esim. nimen tai vuosiluvun perusteella). Haku voi myös ehdottaa nimeä   | **MUST**     |
+| FR-06 | Tapa löytää muita ryhmiä                                                                           | **MUST**     |
+| FR-07 | Ryhmien ylläpito                                                                                   | **MUST**     |
+| FR-08 | Ryhmän ylläpitäjä hyväksyy ryhmään liittyjät                                                       | **MUST**     |
+| FR-09 | Ryhmässä viestittelymahdollisuus / keskustelualusta                                                | **MUST**     |
+| FR-10 | Ryhmän ylläpitäjä voi poistaa henkilöitä ryhmästä                                                  | **MUST**     |
+| FR-11 | Ylläpito-oikeuksien hallinta                                                                       | **MUST**     |
+| FR-12 | Mahdollisuus arvostella elokuvia tähdillä (1–5) ja tekstillä, joko ryhmän sisäisesti tai julkisesti| **MUST**     |
+| FR-13 | Listoja elokuvista, esimerkiksi toive- / vakiolista                                                | **MUST**     |
+| FR-14 | Linkin listoihin voi jakaa kaikille                                                                | **MUST**     |
+| FR-15 | Kirjautuminen (käyttäjätunnus + salasana) hyvällä tietoturvalla                                    | **MUST**     |
+| FR-16 | Suomen kieli                                                                                       | **MUST**     |
+| FR-17 | Rekisteröityminen (käyttäjätunnus + sähköposti + salasana)                                         | **MUST**     |
+| FR-18 | TMDB (The Movie Database) -tietokantaa voi käyttää elokuvien perustietojen hakemiseen              | **SHOULD**   |
+| FR-19 | Törkyviestit voidaan poistaa                                                                       | **SHOULD**   |
+| FR-20 | Omien arvosteluiden muokkaus                                                                       | **SHOULD**   |
+| FR-21 | Sivu ehdottaa käyttäjälle muita ryhmiä                                                             | **COULD**    |
+| FR-22 | Suosituksia elokuvista viimeisimpien arvostelujen perusteella                                      | **COULD**    |
+| FR-23 | Tilastoja: mitä ihmiset ovat katsoneet ja mistä he tykkäävät                                       | **COULD**    |
+| FR-24 | Englanti ja ruotsi                                                                                 | **COULD**    |
+| FR-25 | Elokuvateattereiden tarjonta sivustolle (esim. Finnkino)                                           | **COULD**    |
 
 ---
 
