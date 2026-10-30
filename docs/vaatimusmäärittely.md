@@ -14,7 +14,7 @@
 Asiakkaalla on ollut elokuvaharrastustoimintaa kavereiden kanssa, mutta harrastus vaikeutui, kun kaverit muuttivat eri paikkakunnille. Nykyisin he ehdottavat elokuvia toisilleen WhatsApp-viesteillä.
 
 **Tavoite:**  
-Kehittää verkkosovellus elokuvanharrastajille, jossa kaverukset voivat liittyä ryhmiin ja jakaa elokuvia keskenään.
+Kehittää verkkosovellus elokuvaharrastajille, jossa kaverukset voivat liittyä ryhmiin ja jakaa elokuva-arvosteluja, keskustella ja hakea elokuvia.
 
 ---
 
@@ -32,17 +32,21 @@ Kehittää verkkosovellus elokuvanharrastajille, jossa kaverukset voivat liitty�
 | FR-08  | Ryhmien ylläpito                                                                                  | **MUST**     |
 | FR-09  | Ryhmän ylläpitäjä hyväksyy ryhmään liittyjät                                                      | **MUST**     |
 | FR-10  | Ryhmässä viestittelymahdollisuus / keskustelualusta                                               | **MUST**     |
-| FR-11  | Mahdollisuus arvostella elokuvia tähdillä(1–5) ja tekstillä, joko ryhmän sisäisesti tai julkisesti| **MUST**     |
-| FR-12  | Toivelista elokuvista, joita käyttäjä haluaa katsoa                                               | **MUST**     |
-| FR-13  | Vakiolista klassikkoelokuvista                                                                    | **MUST**     |
-| FR-14  | Linkin listoihin voi jakaa kaikille                                                               | **MUST**     |
-| FR-15  | Sivu ehdottaa käyttäjälle muita ryhmiä                                                            | **COULD**    |
-| FR-16  | Kirjautuminen (käyttäjätunnus + salasana) hyvällä tietoturvalla                                   | **MUST**     |
-| FR-17  | Suosituksia elokuvista viimeisimpien arvostelujen perusteella                                     | **COULD**    |
-| FR-18  | Tilastoja: mitä ihmiset ovat katsoneet ja mistä he tykkäävät                                      | **COULD**    |
-| FR-19  | Suomen kieli                                                                                      | **MUST**     |
-| FR-20  | Englanti ja ruotsi                                                                                | **COULD**    |
-| FR-21  | Törkyviestit voidaan poistaa                                                                      | **SHOULD**   |
+| FR-11  | Törkyviestit voidaan poistaa                                                                      | **SHOULD**   |
+| FR-12  | Ryhmän ylläpitäjä voi poistaa henkilöitä ryhmästä                                                 | **MUST**     |
+| FR-13  | Ylläpito-oikeuksien hallinta                                                                      | **MUST**     |
+| FR-14  | Mahdollisuus arvostella elokuvia tähdillä(1–5) ja tekstillä, joko ryhmän sisäisesti tai julkisesti| **MUST**     |
+| FR-15  | Listoja elokuvista, esimerkiksi toive / vakiolista                                                | **MUST**     |
+| FR-16  | Linkin listoihin voi jakaa kaikille                                                               | **MUST**     |
+| FR-17  | Sivu ehdottaa käyttäjälle muita ryhmiä                                                            | **COULD**    |
+| FR-18  | Kirjautuminen (käyttäjätunnus + salasana) hyvällä tietoturvalla                                   | **MUST**     |
+| FR-19  | Suosituksia elokuvista viimeisimpien arvostelujen perusteella                                     | **COULD**    |
+| FR-20  | Tilastoja: mitä ihmiset ovat katsoneet ja mistä he tykkäävät                                      | **COULD**    |
+| FR-21  | Suomen kieli                                                                                      | **MUST**     |
+| FR-22  | Englanti ja ruotsi                                                                                | **COULD**    |
+| FR-23  | Rekisteröityminen (käyttäjätunnus + sähköp. + salasana)                                           | **MUST**     |
+| FR-24  | Omien arvosteluiden muokkaus                                                                      | **SHOULD**   |
+| FR-25  | Elokuvateattereiden tarjonta sivustolle esim. finnkino                                            | **COULD**    |
 
 ---
 

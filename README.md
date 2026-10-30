@@ -1,4 +1,4 @@
-# Elokuvapalvelu
+# Elokuvanharrastajien ryhmäsovellus
 
 ## Product Goal
 Verkkosovellus elokuvanharrastajille. Sovelluksessa ryhmät voivat jakaa, kommentoida ja antaa palautetta katsomistaan elokuvista yksityisesti ja julkisesti.
