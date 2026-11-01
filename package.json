@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "postinstall": "npm --prefix api ci",
     "start": "node api/index.js"
   },
   "dependencies": {
