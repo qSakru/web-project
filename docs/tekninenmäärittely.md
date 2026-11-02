@@ -50,10 +50,10 @@ flowchart TB
     %% Frontend
     subgraph Frontend["Frontend – React"]
         direction TB
-        UI["React-sovellus<br/>• Responsiivinen<br/>• Suomi (+Enkku/Ruotsi?)<br/>• Haku + ehdotukset<br/>• Etusivu, ryhmät, listat"]
+        UI["React-sovellus<br/>• Responsiivinen<br/>• Suomi (+Enkku/ruotsi)<br/>• Haku + ehdotukset<br/>• Etusivu, ryhmät, listat"]
         AuthUI["Kirjautuminen / Rekisteröityminen"]
-        GroupUI["Ryhmänäkymät<br/>• Keskustelu<br/>• Arvostelut<br/>• Jäsenhyväksynnät"]
-        MovieUI["Elokuvanäkymät<br/>• Arvostelut (1–5★ + teksti)<br/>• Toivelista<br/>• Klassikkolistat<br/>• Jakolinkit"]
+        GroupUI["Ryhmänäkymät<br/>• Keskustelu<br/>• Arvostelut<br/>• Jäsenhyväksynnät<br/>• Jäsenten poisto<br/>• Ylläpito-oikeudet"]
+        MovieUI["Elokuvanäkymät<br/>• Arvostelut (1–5★ + teksti)<br/>• Listat (toive / klassikot)<br/>• Jakolinkit"]
     end
 
     %% Backend
@@ -61,8 +61,8 @@ flowchart TB
         direction TB
         API["Express API<br/>(REST)"]
         Auth["Autentikointi<br/>(???)"]
-        GroupService["Ryhmäpalvelu<br/>• Luonti, ylläpito<br/>• Liittymispyynnöt + hyväksyntä<br/>• Keskustelu / viestit"]
-        ReviewService["Arvostelu- & Listapalvelu<br/>• Julkiset & ryhmän sisäiset arvostelut<br/>• Toivelistat & klassikot<br/>• Muokkaus"]
+        GroupService["Ryhmäpalvelu<br/>• Luonti & ylläpito<br/>• Liittymispyynnöt + hyväksyntä<br/>• Jäsenten poisto<br/>• Ylläpito-oikeuksien hallinta<br/>• Keskustelu / viestit"]
+        ReviewService["Arvostelu- & Listapalvelu<br/>• Julkiset & ryhmän sisäiset arvostelut<br/>• Listat (toive / klassikot)<br/>• Muokkaus"]
         SearchService["Hakupalvelu<br/>• Nimi, vuosi, ehdotukset"]
         Moderation["Moderointi<br/>• Törkyviestien poisto"]
         Recommend["Suosittelu & Tilastot<br/>(COULD)"]
@@ -71,17 +71,17 @@ flowchart TB
     %% Tietokanta
     subgraph Database["Tietokanta – PostgreSQL"]
         UsersDB[(Käyttäjät)]
-        GroupsDB[(Ryhmät + jäsenet)]
+        GroupsDB[(Ryhmät + jäsenet + roolit)]
         MoviesDB[(Elokuvat + metatiedot)]
         ReviewsDB[(Arvostelut)]
-        ListsDB[(Toivelistat & klassikot)]
+        ListsDB[(Toivelistat & Klassikot)]
         MessagesDB[(Keskusteluviestit)]
     end
 
     %% Azure & GitHub
     subgraph Cloud["Azure + GitHub"]
-        Azure["Azure<br/>• App Service / Container Apps<br/>• Azure Database for PostgreSQL<br/>"]
-        GitHub["GitHub<br/>• Lähdekoodi<br/>• CI/CD"]
+        Azure["Azure<br/>• App Service / Container Apps<br/>• Azure Database for PostgreSQL<br/>• Blob Storage"]
+        GitHub["GitHub<br/>• Lähdekoodi<br/>• CI/CD (GitHub->Azure)"]
     end
 
     %% Ulkoiset palvelut
