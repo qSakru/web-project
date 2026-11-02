@@ -27,7 +27,7 @@ function App() {
 
   return (
     <>
-      <h1>Docker Sample testi 123</h1>
+      <h1>Docker Sample testi 1234</h1>
       <div className="card">
         {loading && <p>Loading...</p>}
 
