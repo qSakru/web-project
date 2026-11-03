@@ -39,11 +39,11 @@ body {
   color: #8097b2;
 }
 
-/* ========== NAVBAR (Anikoto style) ========== */
+/* navigointibaari */
 .navbar {
   background: #101925;
   color: #a0b1c5;
-  padding: 0.8rem 1.5rem;
+  padding: 0.8rem 1rem;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -57,15 +57,14 @@ body {
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .navbar-logo {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #26A3D6;
   white-space: nowrap;
-  letter-spacing: 0.5px;
 }
 
 .navbar-search {
@@ -80,27 +79,17 @@ body {
   border: 1px solid #20334d;
   border-radius: 4px 0 0 4px;
   outline: none;
-  font-size: 1rem;
   background: #142030;
   color: #a0b1c5;
 }
 
-.navbar-search input::placeholder {
-  color: #8097b2;
-}
-
 .navbar-search button {
-  padding: 0.55rem 1.1rem;
+  padding: 0.55rem 1rem;
   background: #26A3D6;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
-  font-weight: 600;
-}
-
-.navbar-search button:hover {
-  background: #1a8bc4;
 }
 
 .nav-menu {
@@ -116,17 +105,19 @@ body {
   color: #a0b1c5;
   text-decoration: none;
   font-weight: 500;
-  font-size: 1rem;
 }
 
 .nav-menu a:hover {
   color: #26A3D6;
 }
 
+/* Hamburger -desktop piilotus */
 .hamburger {
   display: none;
   flex-direction: column;
+  justify-content: center;
   cursor: pointer;
+  padding: 6px;
 }
 
 .bar {
@@ -134,35 +125,41 @@ body {
   height: 3px;
   background: #a0b1c5;
   margin: 3px 0;
-  transition: 0.3s;
+  border-radius: 2px;
 }
 
-/* Mobile menu */
+/* Mobiili - korjattu? */
 @media (max-width: 768px) {
   .navbar-search {
     display: none;
   }
 
-  .hamburger {
-    display: flex;
-  }
-
   .nav-menu {
+    display: none;
     position: absolute;
-    top: 70px;
-    left: -100%;
+    top: 100%;
+    left: 0;
+    right: 0;
     flex-direction: column;
     background: #101925;
     width: 100%;
-    text-align: center;
-    transition: 0.3s;
-    padding: 1.5rem 0;
-    gap: 1.2rem;
+    padding: 1rem 0;
+    gap: 0.6rem;
     border-bottom: 1px solid #20334d;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
   }
 
   .nav-menu.active {
-    left: 0;
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .navbar-container {
+    gap: 0.5rem;
   }
 }
 
