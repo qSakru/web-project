@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css'
+import searchMovies from './services/movieService'
+import MovieList from './components/MovieList'
+import Navbar from './components/Navbar'
 
 function App() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [movies, setMovies] = useState([])
 
   const fetchData = async () => {
     setLoading(true)
@@ -27,49 +30,34 @@ function App() {
     fetchData()
   }, [])
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      alert(`Haku: ${searchQuery}`) // tää täytyy muuttaa myöhemmin oikeaksi hakutoiminnoksi
-      setSearchQuery('')
-      setIsMenuOpen(false)
-    }
+ const handleSearch = async (event) => {
+  event.preventDefault();
+
+  if (!searchQuery.trim()) return;
+
+  try {
+    const results = await searchMovies(searchQuery);
+    setMovies(results);
+
+  } catch (error) {
+    console.error("Movie search failed:", error);
   }
+};
 
   return (
     <>
       {/* ========== NAVBAR ========== */}
-      <nav className="navbar">
-        <div className="navbar-container">
-          <div className="navbar-logo">Elokuvasovellus</div>
-
-          <form className="navbar-search" onSubmit={handleSearch}>
-            <input
-              type="text"
-              placeholder="Hae elokuvia..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button type="submit">Hae</button>
-          </form>
-
-          <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-            <li><a href="#etusivu">Etusivu</a></li>
-            <li><a href="#ryhmät">Ryhmät</a></li>
-            <li><a href="#listat">Toivelistat</a></li>
-            <li><a href="#kirjaudu">Kirjaudu</a></li>
-          </ul>
-
-          <div className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </div>
-        </div>
-      </nav>
+      <Navbar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
 
       {/* KONTENTTI */}
         <div className="main-content">
+
+          <MovieList movies={movies} />
+
          <h1>Docker Sample testi 1234</h1>
          <p>Docker test</p>
 
