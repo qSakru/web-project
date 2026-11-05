@@ -11,6 +11,7 @@ function App() {
   const [error, setError] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [movies, setMovies] = useState([])
+  const [hasSearched, setHasSearched] = useState(false)
 
   const fetchData = async () => {
     setLoading(true)
@@ -30,19 +31,21 @@ function App() {
     fetchData()
   }, [])
 
- const handleSearch = async (event) => {
-  event.preventDefault();
+  const handleSearch = async (event) => {
+  event.preventDefault()
 
-  if (!searchQuery.trim()) return;
+  if (!searchQuery.trim()) return
 
-  try {
-    const results = await searchMovies(searchQuery);
-    setMovies(results);
+    setHasSearched(true)
 
-  } catch (error) {
-    console.error("Movie search failed:", error);
+    try {
+    const results = await searchMovies(searchQuery)
+    setMovies(results)
+    } catch (error) {
+    console.error("Movie search failed:", error)
+      setMovies([])
+    }
   }
-};
 
   return (
     <>
@@ -55,8 +58,7 @@ function App() {
 
       {/* KONTENTTI */}
         <div className="main-content">
-
-          <MovieList movies={movies} />
+         <MovieList movies={movies} hasSearched={hasSearched} />
 
          <h1>Docker Sample testi 1234</h1>
          <p>Docker test</p>

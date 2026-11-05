@@ -1,6 +1,9 @@
 import MovieCard from './MovieCard'
 
-function MovieList({ movies }) {
+function MovieList({ movies, hasSearched }) {
+  if (!hasSearched) {
+    return null   // ei näytä mitään enne ekaa hakua
+  }
   if (!movies || movies.length === 0) {
     return <p className="no-results">Elokuvia ei löytynyt.</p>
   }
