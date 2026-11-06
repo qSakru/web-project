@@ -137,7 +137,8 @@ body {
 /* Mobiili - korjattu? */
 @media (max-width: 768px) {
   .navbar-search {
-    display: none;
+    display: flex;
+    position: center;
   }
 
   .nav-menu {
@@ -146,7 +147,7 @@ body {
     top: 100%;
     left: 0;
     right: 0;
-    flex-direction: column;
+    flex-direction: row;
     background: #101925;
     width: 100%;
     padding: 1rem 0;
