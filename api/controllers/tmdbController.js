@@ -1,6 +1,4 @@
 
-
-const url = `https://api.themoviedb.org/3/movie/popular`
 const options = {
     method: 'get',
     headers: {

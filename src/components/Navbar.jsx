@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import SearchBar from './SearchBar';
+import {NavLink} from "react-router-dom"
 
 function Navbar({ searchQuery, setSearchQuery, handleSearch }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,10 +17,10 @@ function Navbar({ searchQuery, setSearchQuery, handleSearch }) {
         />
 
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <li><a href="#etusivu">Etusivu</a></li>
-          <li><a href="#ryhmät">Ryhmät</a></li>
-          <li><a href="#listat">Toivelistat</a></li>
-          <li><a href="#kirjaudu">Kirjaudu</a></li>
+          <li><NavLink to="/">Etusivu</NavLink></li>
+          <li><NavLink to="/ryhmät" href="#ryhmät">Ryhmät</NavLink></li>
+          <li><NavLink to="/listat">Toivelistat</NavLink></li>
+          <li><NavLink to="/kirjaudu">Kirjaudu</NavLink></li>
         </ul>
 
         <div

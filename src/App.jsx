@@ -4,15 +4,25 @@ import './App.css'
 import searchMovies from './services/movieService'
 import MovieList from './components/MovieList'
 import Navbar from './components/Navbar'
+import { BrowserRouter, Routes, Route} from "react-router-dom"
+
+import Etusivu from "./pages/Etusivu"
+import Kirjaudu from "./pages/Kirjaudu";
+import Listat from "./pages/Listat";
+import Ryhmät from "./pages/Ryhmät"
 
 function App() {
+ /* 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+ */
+
   const [searchQuery, setSearchQuery] = useState('')
   const [movies, setMovies] = useState([])
   const [hasSearched, setHasSearched] = useState(false)
 
+  /*
   const fetchData = async () => {
     setLoading(true)
     setError(null)
@@ -30,6 +40,7 @@ function App() {
   useEffect(() => {
     fetchData()
   }, [])
+  */
 
   const handleSearch = async (event) => {
   event.preventDefault()
@@ -50,13 +61,23 @@ function App() {
   return (
     <>
       {/* ========== NAVBAR ========== */}
-      <Navbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={handleSearch}
-      />
+      
+        <Navbar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearch={handleSearch}
+        />
+
+        <Routes>
+          <Route path="/" exact element={<Etusivu movies={movies}/>}/>
+          <Route path="/Ryhmät" exact element={<Ryhmät />}/>
+          <Route path="/Listat" exact element={<Listat />}/>
+          <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
+        </Routes>
+      
 
       {/* KONTENTTI */}
+      {/*
         <div className="main-content">
          <MovieList movies={movies} hasSearched={hasSearched} />
 
@@ -87,7 +108,9 @@ function App() {
           )}
         </div>
       </div>
+    */}
     </>
+    
   )
 }
 
