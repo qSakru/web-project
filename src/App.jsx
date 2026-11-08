@@ -61,7 +61,6 @@ function App() {
   return (
     <>
       {/* ========== NAVBAR ========== */}
-       <BrowserRouter>
         <Navbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -76,7 +75,6 @@ function App() {
           <Route path="/Listat" exact element={<Listat />}/>
           <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
         </Routes>
-       </BrowserRouter>
       
 
       {/* KONTENTTI */}
