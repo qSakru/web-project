@@ -31,7 +31,7 @@ function Etusivu({ movies }) {
   return (
     <div className="main-content">
 
-      <MovieList movies={movies} />
+      <MovieList movies={movies} hasSearched={hasSearched} />
 
       <h1>Docker Sample testi 1234</h1>
       <p>Docker test</p>
