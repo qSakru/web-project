@@ -61,7 +61,7 @@ function App() {
   return (
     <>
       {/* ========== NAVBAR ========== */}
-      
+       <BrowserRouter>
         <Navbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -69,11 +69,14 @@ function App() {
         />
 
         <Routes>
-          <Route path="/" exact element={<Etusivu movies={movies}/>}/>
+          <Route
+          path="/"
+          element={<Etusivu movies={movies} hasSearched={hasSearched} />}/>
           <Route path="/Ryhmät" exact element={<Ryhmät />}/>
           <Route path="/Listat" exact element={<Listat />}/>
           <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
         </Routes>
+       </BrowserRouter>
       
 
       {/* KONTENTTI */}
