@@ -134,7 +134,7 @@ body {
   transition: 0.3s;
 }
 
-/* Mobiili - korjattu? */
+/* Mobiiliversio V2 */
 @media (max-width: 768px) {
   .navbar-search {
     display: none;
@@ -149,10 +149,11 @@ body {
     flex-direction: column;
     background: #101925;
     width: 100%;
-    padding: 1rem 0;
-    gap: 0.7rem;
+    padding: 1.2rem 0;
+    gap: 1rem;
     border-bottom: 1px solid #20334d;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    align-items: center;
   }
 
   .nav-menu.active {
@@ -166,8 +167,25 @@ body {
   .navbar-container {
     padding: 0.7rem 1rem;
   }
-}
 
+/* Käyttäjätiedot ja napit mobiilissa */
+  .user-info {
+    margin: 0.3rem 0;
+  }
+
+  .logout-btn {
+    width: 70%;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+
+  .nav-menu a {
+    font-size: 1.05rem;
+    padding: 0.4rem 0;
+  }
+}
+/* pääsisältö */
 .main-content {
   padding: 2rem;
 }
