@@ -57,6 +57,11 @@ function App() {
       setMovies([])
     }
   }
+  const resetSearch = () => {
+    setHasSearched(false)
+    setMovies([])
+    setSearchQuery("")
+  }
 
   return (
     <>
@@ -65,6 +70,7 @@ function App() {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
+          resetSearch={resetSearch}
         />
 
         <Routes>

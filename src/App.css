@@ -195,6 +195,7 @@ a:hover {
 }
 
 .movie-card {
+  flex: 0 0 150px;
   position: relative;
   border-radius: 6px;
   overflow: hidden;
@@ -261,4 +262,12 @@ a:hover {
 .no-results {
   margin-top: 2rem;
   color: #8097b2;
+}
+
+.side-scroll {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 150px;
+  overflow-x: auto;
+
 }

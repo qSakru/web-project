@@ -1,12 +1,14 @@
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import "../App.css"
 
 import MovieList from '../components/MovieList'
 
 function Etusivu({ movies, hasSearched}) {
 
-  const [data, setData] = useState([])
+  const [dataPopular, setDataPopular] = useState([])
+  const [dataTopRated, setDataTopRated] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -15,14 +17,19 @@ function Etusivu({ movies, hasSearched}) {
     setError(null)
 
     try {
-      const response = await axios.get('/api/popular')
-      setData(response.data.results)
+      const popular = await axios.get('/api/popular')
+      setDataPopular(popular.data.results)
+
+      const topRated = await axios.get('/api/top_rated')
+      setDataTopRated(topRated.data.results)
+
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
   }
+
 
   useEffect(() => {
     fetchData()
@@ -31,17 +38,34 @@ function Etusivu({ movies, hasSearched}) {
   return (
     <div className="main-content">
 
-     <MovieList 
+      {hasSearched && 
+
+        <MovieList 
         movies={movies} 
         hasSearched={hasSearched}
+        style="default"
 
-      />
-      <h1>Suosituimmat Elokuvat Tänään</h1>
-      <MovieList 
-        movies={data}
-        hasSearched={true}
-      />
-      <h1>Kriitikkojen Suosimat</h1>
+        />
+        }
+
+      {!hasSearched && (
+      <>
+        <h1>Suosituimmat Elokuvat Tänään</h1>
+          <MovieList
+            movies={dataPopular}
+            hasSearched={true}
+            style="side-scroll"
+          />
+
+          <h1>Kriitikkojen Suosimat</h1>
+            <MovieList
+            movies={dataTopRated}
+            hasSearched={true}
+            style="side-scroll"
+          />
+      </>
+      )}
+
       {/*
       <div className="card">
 
