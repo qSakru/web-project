@@ -134,11 +134,10 @@ body {
   transition: 0.3s;
 }
 
-/* Mobiili - korjattu? */
+/* Mobiiliversio V2 */
 @media (max-width: 768px) {
   .navbar-search {
-    display: flex;
-    position: center;
+    display: none;
   }
 
   .nav-menu {
@@ -147,13 +146,14 @@ body {
     top: 100%;
     left: 0;
     right: 0;
-    flex-direction: row;
+    flex-direction: column;
     background: #101925;
     width: 100%;
-    padding: 1rem 0;
-    gap: 0.7rem;
+    padding: 1.2rem 0;
+    gap: 1rem;
     border-bottom: 1px solid #20334d;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    align-items: center;
   }
 
   .nav-menu.active {
@@ -167,8 +167,25 @@ body {
   .navbar-container {
     padding: 0.7rem 1rem;
   }
-}
 
+/* Käyttäjätiedot ja napit mobiilissa */
+  .user-info {
+    margin: 0.3rem 0;
+  }
+
+  .logout-btn {
+    width: 70%;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+
+  .nav-menu a {
+    font-size: 1.05rem;
+    padding: 0.4rem 0;
+  }
+}
+/* pääsisältö */
 .main-content {
   padding: 2rem;
 }
@@ -261,4 +278,50 @@ a:hover {
 .no-results {
   margin-top: 2rem;
   color: #8097b2;
+}
+
+/* käyttäjän info ja uloskirjautumisnappi */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background: #142030;
+  border-radius: 20px;
+  border: 1px solid #20334d;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  background: #26A3D6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.user-name {
+  color: #e8f0f7;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  background: none;
+  border: 1px solid #26A3D6;
+  color: #26A3D6;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #26A3D6;
+  color: white;
 }

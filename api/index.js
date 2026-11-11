@@ -1,11 +1,13 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import errorHandler from './middleware/errorHandler.js'
 import testRouter from './routes/testRouter.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import tmdbRouter from './routes/tmdbRouter.js'
+import authRoutes from './routes/auth.js'
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -17,9 +19,10 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
 
 app.use("/api/tmdb", tmdbRouter)
-
+app.use("/api/auth", authRoutes)
 app.use('/api/tests', testRouter)
 app.use(express.static(path.join(__dirname, '../dist')))
 
