@@ -1,12 +1,14 @@
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import "../App.css"
 
 import MovieList from '../components/MovieList'
 
 function Etusivu({ movies, hasSearched}) {
 
-  const [data, setData] = useState([])
+  const [dataPopular, setDataPopular] = useState([])
+  const [dataTopRated, setDataTopRated] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -15,14 +17,19 @@ function Etusivu({ movies, hasSearched}) {
     setError(null)
 
     try {
-      const response = await axios.get('/api/tests')
-      setData(response.data)
+      const popular = await axios.get('/api/popular')
+      setDataPopular(popular.data.results)
+
+      const topRated = await axios.get('/api/top_rated')
+      setDataTopRated(topRated.data.results)
+
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
   }
+
 
   useEffect(() => {
     fetchData()
@@ -31,11 +38,35 @@ function Etusivu({ movies, hasSearched}) {
   return (
     <div className="main-content">
 
-     <MovieList movies={movies} hasSearched={hasSearched}/>
+      {hasSearched && 
 
-      <h1>Docker Sample testi 1234</h1>
-      <p>Docker test</p>
+        <MovieList 
+        movies={movies} 
+        hasSearched={hasSearched}
+        style="default"
 
+        />
+        }
+
+      {!hasSearched && (
+      <>
+        <h1>Suosituimmat Elokuvat Tänään</h1>
+          <MovieList
+            movies={dataPopular}
+            hasSearched={true}
+            style="side-scroll"
+          />
+
+          <h1>Kriitikkojen Suosimat</h1>
+            <MovieList
+            movies={dataTopRated}
+            hasSearched={true}
+            style="side-scroll"
+          />
+      </>
+      )}
+
+      {/*
       <div className="card">
 
         {loading && <p>Loading...</p>}
@@ -47,22 +78,21 @@ function Etusivu({ movies, hasSearched}) {
             background: '#f0f0f0'
           }}>
 
-            <h3>Data from Backend:</h3>
-
+            
             <ul style={{
               textAlign: 'left',
               margin: '10px 0'
             }}>
 
-              {data.map((item) => (
+              {data.map((movie) => (
                 <li
-                  key={item.id}
+                  key={movie.id}
                   style={{ marginBottom: '10px' }}
                 >
-                  {`ID: ${item.id} - ${item.description}`}
+                  {`${movie.title} ${movie.poster_path}`}
                 </li>
               ))}
-
+        
             </ul>
           </div>
         )}
@@ -82,6 +112,7 @@ function Etusivu({ movies, hasSearched}) {
         )}
 
       </div>
+      */}
 
     </div>
   )

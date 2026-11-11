@@ -1,11 +1,13 @@
 import {Router} from "express"
-import getMovies from "../controllers/tmdbController.js"
+import getPopularMovies from "../controllers/tmdbController.js"
 import { searchMovies } from "../controllers/tmdbController.js"
+import { getTopRatedMovies } from "../controllers/tmdbController.js"
 
 const router = Router()
 
 router.get('/search', searchMovies);
-router.get('/movies', getMovies)
+router.get('/popular', getPopularMovies)
+router.get('/top_rated', getTopRatedMovies)
 
 
 export default router

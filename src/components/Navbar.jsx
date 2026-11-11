@@ -3,7 +3,7 @@ import SearchBar from './SearchBar'
 import { NavLink, useLocation } from 'react-router-dom'
 import api from '../services/api'
 
-function Navbar({ searchQuery, setSearchQuery, handleSearch }) {
+function Navbar({ searchQuery, setSearchQuery, handleSearch, resetSearch }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [user, setUser] = useState(null)
   const location = useLocation()
@@ -39,6 +39,7 @@ function Navbar({ searchQuery, setSearchQuery, handleSearch }) {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
+          resetSearch={resetSearch}
         />
 
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>

@@ -1,6 +1,6 @@
 import MovieCard from './MovieCard'
 
-function MovieList({ movies, hasSearched }) {
+function MovieList({ movies, hasSearched, style="default" }) {
   if (!hasSearched) {
     return null   // ei näytä mitään enne ekaa hakua
   }
@@ -9,7 +9,7 @@ function MovieList({ movies, hasSearched }) {
   }
 
   return (
-    <div className="movie-list">
+    <div className={`movie-list ${style}`}>
       {movies.map((movie) => (
         <MovieCard key={movie.id} movie={movie} />
       ))}
