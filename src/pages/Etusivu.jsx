@@ -15,8 +15,8 @@ function Etusivu({ movies, hasSearched}) {
     setError(null)
 
     try {
-      const response = await axios.get('/api/tests')
-      setData(response.data)
+      const response = await axios.get('/api/popular')
+      setData(response.data.results)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -31,11 +31,18 @@ function Etusivu({ movies, hasSearched}) {
   return (
     <div className="main-content">
 
-     <MovieList movies={movies} hasSearched={hasSearched}/>
+     <MovieList 
+        movies={movies} 
+        hasSearched={hasSearched}
 
-      <h1>Docker Sample testi 1234</h1>
-      <p>Docker test</p>
-
+      />
+      <h1>Suosituimmat Elokuvat Tänään</h1>
+      <MovieList 
+        movies={data}
+        hasSearched={true}
+      />
+      <h1>Kriitikkojen Suosimat</h1>
+      {/*
       <div className="card">
 
         {loading && <p>Loading...</p>}
@@ -47,22 +54,21 @@ function Etusivu({ movies, hasSearched}) {
             background: '#f0f0f0'
           }}>
 
-            <h3>Data from Backend:</h3>
-
+            
             <ul style={{
               textAlign: 'left',
               margin: '10px 0'
             }}>
 
-              {data.map((item) => (
+              {data.map((movie) => (
                 <li
-                  key={item.id}
+                  key={movie.id}
                   style={{ marginBottom: '10px' }}
                 >
-                  {`ID: ${item.id} - ${item.description}`}
+                  {`${movie.title} ${movie.poster_path}`}
                 </li>
               ))}
-
+        
             </ul>
           </div>
         )}
@@ -82,6 +88,7 @@ function Etusivu({ movies, hasSearched}) {
         )}
 
       </div>
+      */}
 
     </div>
   )

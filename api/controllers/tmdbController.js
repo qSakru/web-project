@@ -1,4 +1,3 @@
-
 const options = {
     method: 'get',
     headers: {
@@ -25,15 +24,12 @@ res.json(data)
 }
 };
 
-const getMovies = async (req, res, next) => {
-        /*
-        res.json({
-            message: "TMDB Route Works"
-        })
-        */
+const urlPopular = 'https://api.themoviedb.org/3/movie/popular'
 
+const getPopularMovies = async (req, res, next) => {
+      
     try {
-        const response = await fetch(url, options)
+        const response = await fetch(urlPopular, options)
 
         if (!response.ok) {
             throw new Error("Failed to fetch API data")
@@ -47,4 +43,25 @@ const getMovies = async (req, res, next) => {
     }
 }
 
-export default getMovies
+const urlTopRated= "https://api.themoviedb.org/3/movie/top_rated"
+
+export const getTopRatedMovies = async (req, res, next) => {
+      
+    try {
+        const response = await fetch(urlTopRated, options)
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch API data")
+        }
+
+        const data = await response.json()
+        res.json(data)
+
+    } catch (error){
+        next(error)
+    }
+}
+
+
+
+export default getPopularMovies
