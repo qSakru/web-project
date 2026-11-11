@@ -286,6 +286,7 @@ a:hover {
   grid-auto-flow: column;
   grid-auto-columns: 150px;
   overflow-x: auto;
+}
 
 /* käyttäjän info ja uloskirjautumisnappi */
 .user-info {
