@@ -1,6 +1,6 @@
 
 
-function SearchBar({ searchQuery, setSearchQuery, handleSearch }) {
+function SearchBar({ searchQuery, setSearchQuery, handleSearch, resetSearch }) {
 
     return (
         <form className="navbar-search" onSubmit={handleSearch}>
@@ -11,6 +11,7 @@ function SearchBar({ searchQuery, setSearchQuery, handleSearch }) {
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button type="submit">Hae</button>
+            <button onClick={resetSearch}>Etusivulle</button>
         </form>
     );
 }
