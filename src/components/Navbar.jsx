@@ -30,22 +30,37 @@ function Navbar({ searchQuery, setSearchQuery, handleSearch, resetSearch }) {
     }
   }
 
+  const closeMenu = () => setIsMenuOpen(false)
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <div className="navbar-logo">Elokuvasovellus</div>
+        <div className="navbar-logo" onClick={() => { resetSearch?.(); closeMenu() }} style={{ cursor: 'pointer' }}>
+          Elokuvasovellus
+        </div>
 
-        <SearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-          resetSearch={resetSearch}
-        />
+        {/* Desktop-haku */}
+        <div className="desktop-search">
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+          />
+        </div>
 
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <li><NavLink to="/" onClick={resetSearch}>Etusivu</NavLink></li>
-          <li><NavLink to="/ryhmät">Ryhmät</NavLink></li>
-          <li><NavLink to="/listat">Toivelistat</NavLink></li>
+          {/* Mobiili-haku */}
+          <li className="mobile-search">
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
+          </li>
+
+          <li><NavLink to="/" onClick={() => { resetSearch?.(); closeMenu() }}>Etusivu</NavLink></li>
+          <li><NavLink to="/ryhmät" onClick={closeMenu}>Ryhmät</NavLink></li>
+          <li><NavLink to="/listat" onClick={closeMenu}>Toivelistat</NavLink></li>
 
           {user ? (
             <>
@@ -62,7 +77,7 @@ function Navbar({ searchQuery, setSearchQuery, handleSearch, resetSearch }) {
               </li>
             </>
           ) : (
-            <li><NavLink to="/kirjaudu" className="logout-btn">Kirjaudu</NavLink></li>
+            <li><NavLink to="/kirjaudu" className="logout-btn" onClick={closeMenu}>Kirjaudu</NavLink></li>
           )}
         </ul>
 

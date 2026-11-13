@@ -114,6 +114,59 @@ body {
   color: #26A3D6;
 }
 
+/* Desktop- ja mobiilihaku */
+.desktop-search {
+  flex: 1;
+  max-width: 420px;
+  display: flex;
+}
+
+.mobile-search {
+  display: none;
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.8rem;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.mobile-search .navbar-search {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  background: #142030;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #20334d;
+  box-sizing: border-box;
+}
+
+.mobile-search .navbar-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: none;
+  background: transparent;
+  color: #e8f0f7;
+  font-size: 1rem;
+  outline: none;
+  border-radius: 0;
+}
+
+.mobile-search .navbar-search input::placeholder {
+  color: #8097b2;
+}
+
+.mobile-search .navbar-search button {
+  flex-shrink: 0;
+  padding: 0 1rem;
+  background: #26A3D6;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0;
+}
+
 /* Hamburger -desktop piilotus */
 .hamburger {
   display: none;
@@ -134,10 +187,14 @@ body {
   transition: 0.3s;
 }
 
-/* Mobiiliversio V2 */
+/* Mobiiliversio V3 */
 @media (max-width: 768px) {
-  .navbar-search {
+  .desktop-search {
     display: none;
+  }
+
+  .mobile-search {
+    display: block;
   }
 
   .nav-menu {
@@ -149,11 +206,14 @@ body {
     flex-direction: column;
     background: #101925;
     width: 100%;
-    padding: 1.2rem 0;
-    gap: 1rem;
+    padding: 0.5rem 0 1.2rem;
+    gap: 0.8rem;
     border-bottom: 1px solid #20334d;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    align-items: center;
+    align-items: stretch;
+    z-index: 999;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .nav-menu.active {
@@ -168,23 +228,27 @@ body {
     padding: 0.7rem 1rem;
   }
 
-/* Käyttäjätiedot ja napit mobiilissa */
+  /* Käyttäjätiedot ja napit mobiilissa */
   .user-info {
-    margin: 0.3rem 0;
+    margin: 0.3rem auto;
   }
 
   .logout-btn {
     width: 70%;
+    margin: 0 auto;
     text-align: center;
     padding: 0.6rem 1rem;
     font-size: 1rem;
+    display: block;
   }
 
   .nav-menu a {
     font-size: 1.05rem;
     padding: 0.4rem 0;
+    text-align: center;
   }
 }
+
 /* pääsisältö */
 .main-content {
   padding: 2rem;
@@ -212,7 +276,6 @@ a:hover {
 }
 
 .movie-card {
-  flex: 0 0 150px;
   position: relative;
   border-radius: 6px;
   overflow: hidden;
@@ -293,6 +356,7 @@ a:hover {
   color: #e8f0f7;
   font-weight: 600;
 }
+
 /* side-scrollin tyylitys */
 .movie-list.side-scroll {
   display: flex;
@@ -302,6 +366,8 @@ a:hover {
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   margin-top: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #26A3D6 #101925;
 }
 
 .movie-list.side-scroll::-webkit-scrollbar {
