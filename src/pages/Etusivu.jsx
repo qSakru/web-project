@@ -18,11 +18,10 @@ function Etusivu({ movies, hasSearched}) {
 
     try {
       const popular = await axios.get('/api/popular')
-      setDataPopular(popular.data.results)
+      setDataPopular(popular.data.results || [])
 
       const topRated = await axios.get('/api/top_rated')
-      setDataTopRated(topRated.data.results)
-
+      setDataTopRated(topRated.data.results || [])
     } catch (err) {
       setError(err.message)
     } finally {
@@ -35,35 +34,53 @@ function Etusivu({ movies, hasSearched}) {
     fetchData()
   }, [])
 
-  return (
+  if (loading) {
+    return (
+      <div className="main-content">
+        <p className="loading-text">Ladataan elokuvia...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="main-content">
+        <p className="error-text">Virhe: {error}</p>
+      </div>
+    )
+  }
+
+return (
     <div className="main-content">
-
-      {hasSearched && 
-
-        <MovieList 
-        movies={movies} 
-        hasSearched={hasSearched}
-        style="default"
-
-        />
-        }
-
-      {!hasSearched && (
-      <>
-        <h1>Suosituimmat Elokuvat Tänään</h1>
-          <MovieList
-            movies={dataPopular}
-            hasSearched={true}
-            style="side-scroll"
+      {hasSearched ? (
+        <div className="search-results">
+          <h1>Hakutulokset</h1>
+          <MovieList 
+            movies={movies} 
+            hasSearched={hasSearched}
+            style="default"
           />
-
-          <h1>Kriitikkojen Suosimat</h1>
+        </div>
+      ) : (
+        <>
+          <section className="movie-section">
+            <h2>Suosituimmat tänään</h2>
             <MovieList
-            movies={dataTopRated}
-            hasSearched={true}
-            style="side-scroll"
-          />
-      </>
+              movies={dataPopular}
+              hasSearched={true}
+              style="side-scroll"
+            />
+          </section>
+
+          <section className="movie-section">
+            <h2>Kriitikkojen suosimat</h2>
+            <MovieList
+              movies={dataTopRated}
+              hasSearched={true}
+              style="side-scroll"
+            />
+          </section>
+        </>
       )}
 
       {/*

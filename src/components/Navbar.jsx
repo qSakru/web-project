@@ -43,7 +43,7 @@ function Navbar({ searchQuery, setSearchQuery, handleSearch, resetSearch }) {
         />
 
         <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <li><NavLink to="/">Etusivu</NavLink></li>
+          <li><NavLink to="/" onClick={resetSearch}>Etusivu</NavLink></li>
           <li><NavLink to="/ryhmät">Ryhmät</NavLink></li>
           <li><NavLink to="/listat">Toivelistat</NavLink></li>
 
