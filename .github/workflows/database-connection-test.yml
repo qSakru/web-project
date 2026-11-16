@@ -23,6 +23,7 @@ jobs:
         run: npm ci --prefix api
 
       - name: Test PostgreSQL connection
+        working-directory: api
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_HOST: ${{ secrets.DB_HOST }}
