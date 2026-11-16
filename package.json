@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "postinstall": "npm --prefix api ci",
+    "db:migrate": "node api/scripts/migrate.js",
     "start": "node api/index.js"
   },
   "dependencies": {
