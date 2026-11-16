@@ -1,0 +1,85 @@
+name: Test Azure PostgreSQL connection
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  connection-test:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+
+      - name: Install backend dependencies
+        run: npm ci --prefix api
+
+      - name: Test PostgreSQL connection
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_SSL: ${{ secrets.DB_SSL }}
+        run: |
+          node --input-type=module <<'NODE'
+          import pg from 'pg'
+
+          const requiredVariables = [
+            'DB_USER',
+            'DB_HOST',
+            'DB_NAME',
+            'DB_PASSWORD',
+            'DB_PORT',
+            'DB_SSL',
+          ]
+          const missingVariables = requiredVariables.filter((name) => !process.env[name])
+
+          if (missingVariables.length > 0) {
+            console.error(`Missing GitHub Secrets: ${missingVariables.join(', ')}`)
+            process.exitCode = 1
+          } else {
+            const { Client } = pg
+            const client = new Client({
+              user: process.env.DB_USER,
+              host: process.env.DB_HOST,
+              database: process.env.DB_NAME,
+              password: process.env.DB_PASSWORD,
+              port: Number(process.env.DB_PORT),
+              ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+            })
+            let connected = false
+
+            try {
+              await client.connect()
+              connected = true
+              const { rows } = await client.query('SELECT 1 AS connection_ok')
+
+              if (rows[0].connection_ok !== 1) {
+                throw new Error('Unexpected response to SELECT 1')
+              }
+
+              console.log('PostgreSQL connection and SELECT 1 succeeded.')
+            } catch (error) {
+              const errorCode = error && typeof error === 'object' && 'code' in error
+                ? error.code
+                : 'unknown'
+              console.error(`Connection test failed (error code: ${errorCode}).`)
+              console.error('Check the GitHub Secrets, SSL setting, and Azure network access.')
+              process.exitCode = 1
+            } finally {
+              if (connected) {
+                await client.end()
+              }
+            }
+          }
+          NODE
