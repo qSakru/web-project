@@ -43,6 +43,15 @@ const getAllGroups = async () => {
     return result.rows
 }
 
+const getGroupById = async (id) => {
+  const result = await pool.query(
+    'SELECT * FROM movie_groups WHERE id = $1',
+    [id]
+  )
+
+  return result.rows[0] || null
+}
+
 
 // Hae kaikki ryhmät, joihin käyttäjä kuuluu
 const getGroupsByUser = async (userId) => {
@@ -62,5 +71,6 @@ const getGroupsByUser = async (userId) => {
 export {
   createGroup,
   getGroupsByUser,
-    getAllGroups
+  getAllGroups,
+  getGroupById
 }

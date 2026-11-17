@@ -107,7 +107,9 @@ const handleCreateGroup = async (e) => {
       {!loading && !error && groups.length > 0 && (
         <ul>
           {groups.map(group => (
-            <li key={group.id}>{group.name}</li>
+            <li key={group.id}>
+              <Link to={`/Ryhmät/${group.id}`}>{group.name}</Link>
+            </li>
           ))}
         </ul>
       )}
