@@ -10,6 +10,7 @@ import Etusivu from "./pages/Etusivu"
 import Kirjaudu from "./pages/Kirjaudu";
 import Listat from "./pages/Listat";
 import Ryhmät from "./pages/Ryhmät"
+import Elokuvasivu from './pages/Elokuvasivu'
 
 function App() {
  /* 
@@ -80,6 +81,7 @@ function App() {
           <Route path="/Ryhmät" exact element={<Ryhmät />}/>
           <Route path="/Listat" exact element={<Listat />}/>
           <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
+          <Route path="/elokuva/:id" exact element={<Elokuvasivu />}/>
         </Routes>
       
 

@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom'
 function MovieCard({ movie }) {
+  const navigate = useNavigate()
+  
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://via.placeholder.com/300x450/142030/8097b2?text=Ei+kuvaa+saatavilla'
@@ -6,7 +9,7 @@ function MovieCard({ movie }) {
   const year = movie.release_date ? movie.release_date.slice(0, 4) : ''
 
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => navigate(`/elokuva/${movie.id}`)}>
       <div className="poster-wrapper">
         <img
           src={posterUrl}

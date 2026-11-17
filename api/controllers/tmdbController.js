@@ -86,6 +86,21 @@ export const getSuggestions = async (req, res, next) => {
     next(error)
   }
 }
+// Hakee yksittäisen elokuvan tiedot
+export const getMovieDetails = async (req, res, next) => {
+  const { id } = req.params
+
+  try {
+    const url = `https://api.themoviedb.org/3/movie/${id}?language=fi-FI&append_to_response=credits`
+    const response = await fetch(url, options)
+    if (!response.ok) throw new Error("Failed to fetch movie details")
+
+    const data = await response.json()
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
+}
 
 const urlPopular = 'https://api.themoviedb.org/3/movie/popular'
 

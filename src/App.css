@@ -47,8 +47,10 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
   border-bottom: 1px solid #20334d;
+  backdrop-filter: blur(10px);
 }
 
 .navbar-container {
@@ -57,47 +59,66 @@ body {
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0.75rem 1rem;
-  gap: 1rem;
+  padding: 0.8rem 2rem;
+  gap: 1.5rem;
 }
 
 .navbar-logo {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #26A3D6;
   white-space: nowrap;
   flex-shrink: 0;
+  letter-spacing: -0.3px;
 }
 
 .navbar-search {
   flex: 1;
-  max-width: 420px;
+  max-width: 480px;
   display: flex;
+  background: #142030;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #20334d;
+  transition: border-color 0.2s;
+}
+
+.navbar-search:focus-within {
+  border-color: #26A3D6;
 }
 
 .navbar-search input {
   flex: 1;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid #20334d;
-  border-radius: 4px 0 0 4px;
+  padding: 0.65rem 1rem;
+  border: none;
+  background: transparent;
+  color: #e8f0f7;
+  font-size: 0.95rem;
   outline: none;
-  background: #142030;
-  color: #a0b1c5;
+}
+
+.navbar-search input::placeholder {
+  color: #8097b2;
 }
 
 .navbar-search button {
-  padding: 0.55rem 1rem;
+  padding: 0 1.2rem;
   background: #26A3D6;
   color: white;
   border: none;
-  border-radius: 0 4px 4px 0;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.navbar-search button:hover {
+  background: #1a8bb8;
 }
 
 .nav-menu {
   display: flex;
   list-style: none;
-  gap: 1.5rem;
+  gap: 1.8rem;
   margin: 0;
   padding: 0;
   align-items: center;
@@ -107,11 +128,30 @@ body {
   color: #a0b1c5;
   text-decoration: none;
   font-weight: 500;
-  white-space: nowrap;
+  font-size: 0.95rem;
+  transition: color 0.2s;
 }
 
-.nav-menu a:hover {
+.nav-menu a:hover,
+.nav-menu a.active {
   color: #26A3D6;
+}
+
+.logout-btn {
+  background: none;
+  border: 1px solid #26A3D6;
+  color: #26A3D6;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #26A3D6;
+  color: white;
 }
 
 /* Desktop- ja mobiilihaku */
@@ -490,4 +530,147 @@ a:hover {
 .suggestions::-webkit-scrollbar-thumb {
   background: #26A3D6;
   border-radius: 3px;
+}
+
+/* Elokuvasivu */
+.movie-detail {
+  display: flex;
+  gap: 3rem;
+  text-align: left;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  align-items: flex-start;
+}
+
+.movie-detail-poster {
+  width: 320px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+.movie-detail-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.movie-detail-info h1 {
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+
+.movie-meta {
+  display: flex;
+  gap: 1.2rem;
+  margin: 0.5rem 0 1rem;
+  color: #8097b2;
+  font-size: 1.05rem;
+}
+
+.movie-meta .rating {
+  color: #26A3D6;
+  font-weight: 600;
+}
+
+.genres {
+  color: #26A3D6;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.overview {
+  line-height: 1.7;
+  margin: 1.2rem 0 1.5rem;
+  color: #e8f0f7;
+  font-size: 1.05rem;
+  max-width: 700px;
+}
+
+.cast h3 {
+  margin: 1.5rem 0 1rem;
+  font-size: 1.3rem;
+}
+
+.cast-list {
+  display: flex;
+  gap: 1.2rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #26A3D6 #101925;
+}
+
+.cast-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.cast-list::-webkit-scrollbar-track {
+  background: #101925;
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+.cast-list::-webkit-scrollbar-thumb {
+  background: #26A3D6;
+  border-radius: 3px;
+}
+
+.cast-list::-webkit-scrollbar-thumb:hover {
+  background: #1a8bb8;
+}
+
+.cast-member {
+  flex: 0 0 110px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cast-member span {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e8f0f7;
+  margin-top: 0.3rem;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.cast-member small {
+  display: block;
+  font-size: 0.75rem;
+  color: #8097b2;
+  margin-top: 0.15rem;
+  line-height: 1.2;
+}
+
+.cast-member img,
+.cast-member .no-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .movie-detail {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .movie-detail-poster {
+    width: 240px;
+  }
+  .movie-meta {
+    justify-content: center;
+  }
+  .overview {
+    max-width: 100%;
+  }
 }
