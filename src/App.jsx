@@ -11,6 +11,7 @@ import Kirjaudu from "./pages/Kirjaudu";
 import Listat from "./pages/Listat";
 import Ryhmät from "./pages/Ryhmät"
 import Elokuvasivu from './pages/Elokuvasivu'
+import Ryhmäsivu from './pages/Ryhmäsivu'
 
 function App() {
  /* 
@@ -79,6 +80,7 @@ function App() {
           path="/"
           element={<Etusivu movies={movies} hasSearched={hasSearched} />}/>
           <Route path="/Ryhmät" exact element={<Ryhmät />}/>
+          <Route path="/Ryhmät/:id" exact element={<Ryhmäsivu />}/>
           <Route path="/Listat" exact element={<Listat />}/>
           <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
           <Route path="/elokuva/:id" exact element={<Elokuvasivu />}/>
