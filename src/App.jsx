@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
@@ -49,10 +49,7 @@ function App() {
   }, [])
   */
 
-  const handleSearch = async (event) => {
-  event.preventDefault()
-
-  if (!searchQuery.trim()) return
+ 
   const handleSearch = async (event, page = 1) => {
     if (event) event.preventDefault()
     if (!searchQuery.trim()) return
