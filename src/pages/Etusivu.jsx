@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import MovieList from '../components/MovieList'
 
-function Etusivu({ movies, hasSearched, currentPage, totalPages, onPageChange }) {
+function Etusivu({ movies, hasSearched, currentPage, totalPages, onPageChange, addMovie, removeMovie }) {
   const [dataPopular, setDataPopular] = useState([])
   const [dataTopRated, setDataTopRated] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,7 +34,7 @@ function Etusivu({ movies, hasSearched, currentPage, totalPages, onPageChange })
       {hasSearched ? (
         <>
           <h2 style={{ textAlign: 'left', marginBottom: '1rem' }}>Hakutulokset</h2>
-          <MovieList movies={movies} hasSearched={true} style="default" />
+          <MovieList movies={movies} hasSearched={true} style="default" addMovie={addMovie} removeMovie={removeMovie} />
 
           {totalPages > 1 && (
             <div className="pagination">
@@ -58,12 +58,12 @@ function Etusivu({ movies, hasSearched, currentPage, totalPages, onPageChange })
         <>
           <section className="movie-section">
             <h2>Suosituimmat tänään</h2>
-            <MovieList movies={dataPopular} hasSearched={true} style="side-scroll" />
+            <MovieList movies={dataPopular} hasSearched={true} style="side-scroll" addMovie={addMovie} removeMovie={removeMovie} />
           </section>
 
           <section className="movie-section">
             <h2>Kriitikkojen suosimat</h2>
-            <MovieList movies={dataTopRated} hasSearched={true} style="side-scroll" />
+            <MovieList movies={dataTopRated} hasSearched={true} style="side-scroll"  addMovie={addMovie} removeMovie={removeMovie} />
           </section>
         </>
       )}
