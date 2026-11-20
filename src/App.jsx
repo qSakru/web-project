@@ -25,8 +25,16 @@ function App() {
   const [movies, setMovies] = useState([])
   const [hasSearched, setHasSearched] = useState(false)
 
+  const [notification, setNotification] = useState("")
+  const [wishlist, setWishlist] = useState(()=> {
+    const savedList = localStorage.getItem("wishlist")
 
-  const [wishlist, setWishlist] = useState([])
+    if (savedList) {
+      return JSON.parse(savedList)
+    } else {
+      return []
+    }
+  })
     
   /*
   const fetchData = async () => {
@@ -71,19 +79,38 @@ function App() {
 
   function addMovie(movie){
     setWishlist([...wishlist, movie])
+    setNotification("Elokuva lisätty")
   }
 
   function removeMovie(id){
     setWishlist(wishlist.filter(movie => movie.id !== id))
+    setNotification("Elokuva poistettu listalta")
   }
 
   useEffect(() => {
-    console.log("Wishlist updated:", wishlist);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
 }, [wishlist]);
+
+  useEffect(() => {
+    if (!notification) return
+
+    const timer = setTimeout(()=>{
+      setNotification("")
+    }, 2000)
+
+      return () => clearTimeout(timer)
+  }, [notification])
 
 
   return (
     <>
+
+      {notification && (
+          <div className="notification">
+            {notification}
+          </div>
+        )}
+
       {/* ========== NAVBAR ========== */}
         <Navbar
           searchQuery={searchQuery}
