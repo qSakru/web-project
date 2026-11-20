@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import MovieCard from './MovieCard'
 
-function MovieList({ movies, hasSearched, style = "default" }) {
+function MovieList({ movies, hasSearched, style = "default", addMovie, removeMovie }) {
   const scrollRef = useRef(null)
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function MovieList({ movies, hasSearched, style = "default" }) {
       className={`movie-list ${style}`}
     >
       {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
+        <MovieCard key={movie.id} movie={movie} addMovie={addMovie} removeMovie={removeMovie} />
       ))}
     </div>
   )

@@ -5,7 +5,7 @@ import "../App.css"
 
 import MovieList from '../components/MovieList'
 
-function Etusivu({ movies, hasSearched}) {
+function Etusivu({ movies, hasSearched, addMovie, removeMovie }) {
 
   const [dataPopular, setDataPopular] = useState([])
   const [dataTopRated, setDataTopRated] = useState([])
@@ -59,6 +59,8 @@ return (
             movies={movies} 
             hasSearched={hasSearched}
             style="default"
+            addMovie={addMovie}
+            removeMovie={removeMovie}
           />
         </div>
       ) : (
@@ -69,6 +71,8 @@ return (
               movies={dataPopular}
               hasSearched={true}
               style="side-scroll"
+              addMovie={addMovie}
+              removeMovie={removeMovie}
             />
           </section>
 
@@ -78,6 +82,8 @@ return (
               movies={dataTopRated}
               hasSearched={true}
               style="side-scroll"
+              addMovie={addMovie}
+              removeMovie={removeMovie}
             />
           </section>
         </>

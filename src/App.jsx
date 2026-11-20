@@ -5,6 +5,7 @@ import searchMovies from './services/movieService'
 import MovieList from './components/MovieList'
 import Navbar from './components/Navbar'
 import { BrowserRouter, Routes, Route} from "react-router-dom"
+import MovieCard from './components/MovieCard'
 
 import Etusivu from "./pages/Etusivu"
 import Kirjaudu from "./pages/Kirjaudu";
@@ -24,6 +25,9 @@ function App() {
   const [movies, setMovies] = useState([])
   const [hasSearched, setHasSearched] = useState(false)
 
+
+  const [wishlist, setWishlist] = useState([])
+    
   /*
   const fetchData = async () => {
     setLoading(true)
@@ -65,6 +69,19 @@ function App() {
     setSearchQuery("")
   }
 
+  function addMovie(movie){
+    setWishlist([...wishlist, movie])
+  }
+
+  function removeMovie(id){
+    setWishlist(wishlist.filter(movie => movie.id !== id))
+  }
+
+  useEffect(() => {
+    console.log("Wishlist updated:", wishlist);
+}, [wishlist]);
+
+
   return (
     <>
       {/* ========== NAVBAR ========== */}
@@ -78,13 +95,15 @@ function App() {
         <Routes>
           <Route
           path="/"
-          element={<Etusivu movies={movies} hasSearched={hasSearched} />}/>
+          element={<Etusivu movies={movies} hasSearched={hasSearched} addMovie={addMovie} />}/>
           <Route path="/Ryhmät" exact element={<Ryhmät />}/>
           <Route path="/Ryhmät/:id" exact element={<Ryhmäsivu />}/>
-          <Route path="/Listat" exact element={<Listat />}/>
+          <Route path="/Listat" exact element={<Listat wishlist={wishlist} removeMovie={removeMovie}/>}/>
           <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
           <Route path="/elokuva/:id" exact element={<Elokuvasivu />}/>
         </Routes>
+
+
       
 
       {/* KONTENTTI */}
