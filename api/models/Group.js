@@ -51,6 +51,20 @@ const getGroupById = async (id) => {
 
   return result.rows[0] || null
 }
+const getGroupMembers = async(groupId) => {
+  const result = await pool.query (
+    `SELECT
+    users.id,
+    users.username,
+    group_members.role
+FROM group_members
+JOIN users
+    ON group_members.user_id = users.id
+WHERE group_members.group_id = $1`,
+    [groupId]
+  )
+  return result.rows
+}
 
 
 // Hae kaikki ryhmät, joihin käyttäjä kuuluu
@@ -67,10 +81,269 @@ const getGroupsByUser = async (userId) => {
 
   return result.rows
 }
+const joinGroup = async (groupId, userId) => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const groupResult = await client.query(
+      `SELECT id FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      [groupId]
+    )
+    if (groupResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_found' }
+    }
+    // lisää käyttäjän jäseneksi
+    const result = await client.query (
+      `INSERT INTO group_members (group_id, user_id, role)
+      VALUES ($1, $2, 'member')
+      ON CONFLICT (group_id, user_id) DO NOTHING
+      RETURNING *`,
+      [groupId, userId]
+    )
+    await client.query('COMMIT')
+    if (result.rows.length === 0) {
+      return { status: 'already_member' }
+    }
+    return { status: 'joined' }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+// poistaa käyttäjän ryhmästä
+const leaveGroup = async (groupId, userId) => {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+
+    const groupResult = await client.query(
+      `SELECT id FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      [groupId]
+    )
+    if (groupResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_found' }
+    }
+
+    // tarkistetaan käyttäjän rooli ryhmässä
+    const memberResult = await client.query(
+      `SELECT role
+      FROM group_members
+      WHERE group_id = $1 AND user_id = $2`,
+      [groupId, userId]
+    )
+    if (memberResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_member' }
+    }
+    const role = memberResult.rows[0].role
+
+    //ryhmän jäsenmäärän selvitys
+    const countResult = await client.query(
+      `SELECT COUNT(*) FROM group_members WHERE group_id = $1`,
+      [groupId]
+    )
+    const memberCount = Number(countResult.rows[0].count)
+
+    // Ylläpitäjä voi poistua vain, jos ryhmään jää toinen ylläpitäjä.
+    if (role === 'admin' && memberCount > 1) {
+      const otherAdminsResult = await client.query(
+        `SELECT COUNT(*)
+         FROM group_members
+         WHERE group_id = $1 AND role = 'admin' AND user_id <> $2`,
+        [groupId, userId]
+      )
+
+      if (Number(otherAdminsResult.rows[0].count) === 0) {
+        await client.query('COMMIT')
+        return { status: 'admin_must_transfer' }
+      }
+    }
+    // jos ylläpitäjä on ainoa jäsen poistuessa ryhmästä, ryhmä poistetaan
+    if (role === 'admin' && memberCount === 1) {
+      await client.query(
+        `DELETE FROM group_members WHERE group_id = $1 AND user_id = $2`,
+        [groupId, userId]
+      )
+      await client.query(
+        `DELETE FROM movie_groups WHERE id = $1`,
+        [groupId]
+      )
+      await client.query('COMMIT')
+      return { status: 'group_deleted'}
+    }
+    // tavallinen jäsen voi poistua ryhmästä
+    await client.query(
+      `DELETE FROM group_members WHERE group_id = $1 AND user_id = $2`,
+      [groupId, userId]
+    )
+    await client.query('COMMIT')
+    return { status: 'left'}
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+
+  }
+}
+
+// Antaa ylläpitäjän oikeudet ryhmän jäsenelle.
+const promoteMemberToAdmin = async (groupId, currentUserId, newAdminId) => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    // Lukitaan ryhmä siirron ajaksi
+    const groupResult = await client.query(
+      `SELECT id FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      [groupId]
+    )
+
+    if (groupResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_found' }
+    }
+
+    // Tarkistetaan, että pyynnön tekijä on ylläpitäjä
+    const currentAdminResult = await client.query(
+      `SELECT role
+       FROM group_members
+       WHERE group_id = $1 AND user_id = $2
+       FOR UPDATE`,
+      [groupId, currentUserId]
+    )
+
+    if (
+      currentAdminResult.rows.length === 0 ||
+      currentAdminResult.rows[0].role !== 'admin'
+    ) {
+      await client.query('COMMIT')
+      return { status: 'not_admin' }
+    }
+
+    // Ylläpitäjä ei voi siirtää oikeuksia itselleen
+    if (Number(currentUserId) === Number(newAdminId)) {
+      await client.query('COMMIT')
+      return { status: 'same_user' }
+    }
+
+    // Tarkistetaan, että uusi ylläpitäjä kuuluu ryhmään
+    const newAdminResult = await client.query(
+      `SELECT role
+       FROM group_members
+       WHERE group_id = $1 AND user_id = $2
+       FOR UPDATE`,
+      [groupId, newAdminId]
+    )
+
+    if (newAdminResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'target_not_member' }
+    }
+
+    if (newAdminResult.rows[0].role === 'admin') {
+      await client.query('COMMIT')
+      return { status: 'already_admin' }
+    }
+
+    await client.query(
+      `UPDATE group_members
+       SET role = 'admin'
+       WHERE group_id = $1 AND user_id = $2`,
+      [groupId, newAdminId]
+    )
+
+    await client.query('COMMIT')
+
+    return { status: 'promoted' }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+const removeGroupMember = async (groupId, currentUserId, memberId) => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const groupResult = await client.query(
+      `SELECT id FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      [groupId]
+    )
+
+    if (groupResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_found' }
+    }
+
+    const adminResult = await client.query(
+      `SELECT role
+       FROM group_members
+       WHERE group_id = $1 AND user_id = $2
+       FOR UPDATE`,
+      [groupId, currentUserId]
+    )
+
+    if (adminResult.rows.length === 0 || adminResult.rows[0].role !== 'admin') {
+      await client.query('COMMIT')
+      return { status: 'not_admin' }
+    }
+
+    const memberResult = await client.query(
+      `SELECT role
+       FROM group_members
+       WHERE group_id = $1 AND user_id = $2
+       FOR UPDATE`,
+      [groupId, memberId]
+    )
+
+    if (memberResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'target_not_member' }
+    }
+
+    if (memberResult.rows[0].role !== 'member') {
+      await client.query('COMMIT')
+      return { status: 'target_not_regular_member' }
+    }
+
+    await client.query(
+      `DELETE FROM group_members
+       WHERE group_id = $1 AND user_id = $2`,
+      [groupId, memberId]
+    )
+
+    await client.query('COMMIT')
+    return { status: 'removed' }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
 
 export {
   createGroup,
   getGroupsByUser,
   getAllGroups,
-  getGroupById
+  getGroupById,
+  getGroupMembers,
+  joinGroup,
+  leaveGroup,
+  promoteMemberToAdmin,
+  removeGroupMember
 }

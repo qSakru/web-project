@@ -1,29 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
-import searchMovies from './services/movieService'
-import MovieList from './components/MovieList'
 import Navbar from './components/Navbar'
-import { BrowserRouter, Routes, Route} from "react-router-dom"
-import MovieCard from './components/MovieCard'
-
-import Etusivu from "./pages/Etusivu"
-import Kirjaudu from "./pages/Kirjaudu";
-import Listat from "./pages/Listat";
-import Ryhmät from "./pages/Ryhmät"
+import Etusivu from './pages/Etusivu'
 import Elokuvasivu from './pages/Elokuvasivu'
+import Kirjaudu from './pages/Kirjaudu'
+import Listat from './pages/Listat'
+import Ryhmät from './pages/Ryhmät'
 import Ryhmäsivu from './pages/Ryhmäsivu'
 
 function App() {
- /* 
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
- */
-
   const [searchQuery, setSearchQuery] = useState('')
   const [movies, setMovies] = useState([])
   const [hasSearched, setHasSearched] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const navigate = useNavigate()
 
   const [notification, setNotification] = useState("")
   const [wishlist, setWishlist] = useState(()=> {
@@ -60,21 +53,36 @@ function App() {
   event.preventDefault()
 
   if (!searchQuery.trim()) return
+  const handleSearch = async (event, page = 1) => {
+    if (event) event.preventDefault()
+    if (!searchQuery.trim()) return
 
     setHasSearched(true)
+    setCurrentPage(page)
 
     try {
-    const results = await searchMovies(searchQuery)
-    setMovies(results)
+      const res = await axios.get(`/api/search?query=${encodeURIComponent(searchQuery)}&page=${page}`)
+      setMovies(res.data.results || [])
+      setTotalPages(res.data.total_pages || 1)
     } catch (error) {
-    console.error("Movie search failed:", error)
+      console.error('Search failed:', error)
       setMovies([])
+      setTotalPages(1)
     }
+
+    navigate('/')
   }
+
+  const handlePageChange = (newPage) => {
+    handleSearch(null, newPage)
+  }
+
   const resetSearch = () => {
     setHasSearched(false)
     setMovies([])
-    setSearchQuery("")
+    setSearchQuery('')
+    setCurrentPage(1)
+    setTotalPages(1)
   }
 
   function addMovie(movie){
@@ -110,27 +118,6 @@ function App() {
             {notification}
           </div>
         )}
-
-      {/* ========== NAVBAR ========== */}
-        <Navbar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-          resetSearch={resetSearch}
-        />
-
-        <Routes>
-          <Route
-          path="/"
-          element={<Etusivu movies={movies} hasSearched={hasSearched} addMovie={addMovie} />}/>
-          <Route path="/Ryhmät" exact element={<Ryhmät />}/>
-          <Route path="/Ryhmät/:id" exact element={<Ryhmäsivu />}/>
-          <Route path="/Listat" exact element={<Listat wishlist={wishlist} removeMovie={removeMovie}/>}/>
-          <Route path="/Kirjaudu" exact element={<Kirjaudu />}/>
-          <Route path="/elokuva/:id" exact element={<Elokuvasivu />}/>
-        </Routes>
-
-
       
 
       {/* KONTENTTI */}
@@ -166,8 +153,33 @@ function App() {
         </div>
       </div>
     */}
+      <Navbar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+        resetSearch={resetSearch}
+      />
+
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <Etusivu 
+              movies={movies} 
+              hasSearched={hasSearched}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          } 
+        />
+        <Route path="/Ryhmät" element={<Ryhmät />} />
+        <Route path="/Ryhmät/:id" element={<Ryhmäsivu />} />
+        <Route path="/Listat" element={<Listat />} />
+        <Route path="/Kirjaudu" element={<Kirjaudu />} />
+        <Route path="/elokuva/:id" element={<Elokuvasivu />} />
+      </Routes>
     </>
-    
   )
 }
 
