@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import api from '../services/api'
+import GroupMembers from '../components/groups/GroupMembers'
+import GroupMembershipActions from '../components/groups/GroupMembershipActions'
+import './Ryhmäsivu.css'
 
 export default function Ryhmäsivu() {
   const { id } = useParams()
@@ -129,73 +132,140 @@ export default function Ryhmäsivu() {
     }
   }
 
+  const handlePromoteMember = async (newAdminId) => {
+    setActionLoading(true)
+    setActionError(null)
+    setNotice(null)
+
+    let response
+    try {
+      response = await api.put(`/groups/${id}/admin`, { newAdminId })
+    } catch (err) {
+      console.error('Ylläpitäjän oikeuksien antaminen epäonnistui:', err.response?.data || err.message)
+      const error = err.response?.data?.error
+      setActionError(
+        (typeof error === 'string' ? error : error?.message) ||
+        'Ylläpitäjän oikeuksien antaminen epäonnistui.'
+      )
+      setActionLoading(false)
+      return false
+    }
+
+    setNotice(response.data.message)
+
+    try {
+      const data = await fetchGroupData()
+      setGroup(data.group)
+      setMembers(data.members)
+    } catch (err) {
+      console.error('Ryhmätietojen päivitys siirron jälkeen epäonnistui:', err.response?.data || err.message)
+      setActionError('Ylläpitäjän siirto onnistui, mutta tietojen päivitys epäonnistui. Päivitä sivu.')
+    } finally {
+      setActionLoading(false)
+    }
+
+    return true
+  }
+
+  const handleRemoveMember = async (memberId) => {
+    setActionLoading(true)
+    setActionError(null)
+    setNotice(null)
+
+    let response
+    try {
+      response = await api.delete(`/groups/${id}/members/${memberId}`)
+    } catch (err) {
+      console.error('Jäsenen poistaminen epäonnistui:', err.response?.data || err.message)
+      const error = err.response?.data?.error
+      setActionError(
+        (typeof error === 'string' ? error : error?.message) ||
+        'Jäsenen poistaminen ryhmästä epäonnistui.'
+      )
+      setActionLoading(false)
+      return false
+    }
+
+    setNotice(response.data.message)
+
+    try {
+      const data = await fetchGroupData()
+      setGroup(data.group)
+      setMembers(data.members)
+    } catch (err) {
+      console.error('Ryhmätietojen päivitys jäsenen poiston jälkeen epäonnistui:', err.response?.data || err.message)
+      setActionError('Jäsen poistettiin, mutta ryhmätietojen päivitys epäonnistui. Päivitä sivu.')
+    } finally {
+      setActionLoading(false)
+    }
+
+    return true
+  }
+
   const currentMembership = user
     ? members.find((member) => String(member.id) === String(user.id))
     : null
+  const membershipActionsDisabled = actionLoading || loading || Boolean(error)
+  const hasOtherAdmin = members.some(
+    (member) => member.role === 'admin' && String(member.id) !== String(user?.id)
+  )
 
   return (
-    <div className="page">
-      <h1>Ryhmäsivu</h1>
-      <p>ID: {id}</p>
-      {loading && <p>Ladataan ryhmää...</p>}
-      {error && <p>{error}</p>}
-      {!loading && !error && group && (
-        <>
-          <h2>{group.name}</h2>
-          <p>{group.description || 'Ei kuvausta.'}</p>
-        </>
-      )}
-      {authLoading && <p>Tarkistetaan kirjautumistilaa...</p>}
-      {authError && <p role="alert">{authError}</p>}
-      {!authLoading && !authError && !user && (
-        <p>
-          <Link to="/Kirjaudu">Kirjaudu sisään liittyäksesi ryhmään.</Link>
-        </p>
-      )}
-      {!authLoading && !authError && user && !currentMembership && (
-        <button
-          type="button"
-          onClick={() => handleMembershipAction('join')}
-          disabled={actionLoading || loading || Boolean(error)}
-        >
-          {actionLoading ? 'Liitytään...' : 'Liity ryhmään'}
-        </button>
-      )}
-      {!authLoading && !authError && user && currentMembership?.role === 'member' && (
-        <button
-          type="button"
-          onClick={() => handleMembershipAction('leave')}
-          disabled={actionLoading || loading || Boolean(error)}
-        >
-          {actionLoading ? 'Poistutaan...' : 'Poistu ryhmästä'}
-        </button>
-      )}
-      {!authLoading && !authError && user && currentMembership?.role === 'admin' && members.length > 1 && (
-        <p>Ylläpitäjä ei voi poistua, kun ryhmässä on muita jäseniä.</p>
-      )}
-      {!authLoading && !authError && user && currentMembership?.role === 'admin' && members.length === 1 && (
-        <button
-          type="button"
-          onClick={() => handleMembershipAction('leave')}
-          disabled={actionLoading || loading || Boolean(error)}
-        >
-          {actionLoading ? 'Poistetaan ryhmää...' : 'Poistu ja poista ryhmä'}
-        </button>
-      )}
-      {actionError && <p role="alert">{actionError}</p>}
-      {notice && <p role="status">{notice}</p>}
-      {members.length > 0 && !loading && !error && (
-        <div>
-          <h3>Jäsenet</h3>
-          <ul>
-            {members.map((member) => (
-              <li key={member.id}>
-                {member.username} ({member.role})
-              </li>
-            ))}
-          </ul>
+    <main className="group-page">
+      <header className="group-page__header">
+        <h1>Ryhmäsivu</h1>
+        <p>ID: {id}</p>
+        {loading && <p>Ladataan ryhmää...</p>}
+        {error && <p role="alert">{error}</p>}
+        {!loading && !error && group && (
+          <>
+            <h2>{group.name}</h2>
+            <p>{group.description || 'Ei kuvausta.'}</p>
+          </>
+        )}
+      </header>
+
+      <div className="group-page__actions">
+        <GroupMembershipActions
+          user={user}
+          membership={currentMembership}
+          memberCount={members.length}
+          hasOtherAdmin={hasOtherAdmin}
+          authLoading={authLoading}
+          authError={authError}
+          actionLoading={actionLoading}
+          actionError={actionError}
+          notice={notice}
+          disabled={membershipActionsDisabled}
+          onJoin={() => handleMembershipAction('join')}
+          onLeave={() => handleMembershipAction('leave')}
+        />
+      </div>
+
+      {!loading && !error && (
+        <div className="group-layout">
+          <aside className="group-panel group-layout__members" aria-label="Ryhmän jäsenet">
+            <GroupMembers
+              members={members}
+              currentUserId={user?.id}
+              currentUserRole={currentMembership?.role}
+              actionLoading={membershipActionsDisabled}
+              onPromoteMember={handlePromoteMember}
+              onRemoveMember={handleRemoveMember}
+            />
+          </aside>
+
+          <section className="group-panel group-layout__chat" aria-labelledby="group-chat-title">
+            <h2 id="group-chat-title">Chat</h2>
+            <p>Chatin toteutus tulee myöhemmin.</p>
+          </section>
+
+          <aside className="group-panel group-layout__reviews" aria-labelledby="group-reviews-title">
+            <h2 id="group-reviews-title">Elokuva-arvostelut ja muu sisältö</h2>
+            <p>Arvostelujen ja muiden ryhmäsisältöjen toteutus tulee myöhemmin.</p>
+          </aside>
         </div>
       )}
-    </div>
+    </main>
   )
 }

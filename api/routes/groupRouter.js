@@ -4,7 +4,9 @@ import { getGroup,
       postGroup,
        getGroupMembersController,
     joinGroupController,
-leaveGroupController } from '../controllers/GroupController.js'
+leaveGroupController,
+transferAdminController,
+removeGroupMemberController } from '../controllers/GroupController.js'
 import { authenticate } from '../middleware/auth.js'
 
 
@@ -14,9 +16,13 @@ router.get('/', getGroups)
 router.get('/:id', getGroup)
 router.get('/:id/members', getGroupMembersController)
 
+
 router.post('/', authenticate, postGroup)
 router.post('/:id/join', authenticate, joinGroupController)
 
 router.delete('/:id/leave', authenticate, leaveGroupController)
+router.delete('/:id/members/:memberId', authenticate, removeGroupMemberController)
+
+router.put('/:id/admin', authenticate, transferAdminController)
 
 export default router
