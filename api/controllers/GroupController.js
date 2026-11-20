@@ -3,7 +3,9 @@ import { createGroup,
     getGroupById,
      getGroupMembers,
     joinGroup,
-    leaveGroup } from '../models/Group.js'
+    leaveGroup,
+     promoteMemberToAdmin,
+     removeGroupMember } from '../models/Group.js'
 
 const getGroups = async (req, res, next) => {
   try {
@@ -147,4 +149,117 @@ const leaveGroupController = async (req, res, next) => {
   }
 }
 
-export { getGroup, getGroups, postGroup, getGroupMembersController, joinGroupController, leaveGroupController }
+const transferAdminController = async (req, res, next) => {
+  const id = Number(req.params.id)
+  const newAdminId = Number(req.body.newAdminId)
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({
+      error: 'Virheellinen ryhmän ID'
+    })
+  }
+
+  if (!Number.isInteger(newAdminId) || newAdminId < 1) {
+    return res.status(400).json({
+      error: 'Virheellinen uuden ylläpitäjän ID'
+    })
+  }
+
+  try {
+    const result = await promoteMemberToAdmin(id, req.user.id, newAdminId)
+
+    if (result.status === 'not_found') {
+      return res.status(404).json({
+        error: 'Ryhmää ei löytynyt'
+      })
+    }
+
+    if (result.status === 'not_admin') {
+      return res.status(403).json({
+        error: 'Vain ryhmän ylläpitäjä voi siirtää ylläpitäjän oikeudet'
+      })
+    }
+
+    if (result.status === 'same_user') {
+      return res.status(400).json({
+        error: 'Et voi siirtää ylläpitäjän oikeuksia itsellesi'
+      })
+    }
+
+    if (result.status === 'target_not_member') {
+      return res.status(404).json({
+        error: 'Valittu käyttäjä ei ole ryhmän jäsen'
+      })
+    }
+
+    if (result.status === 'already_admin') {
+      return res.status(409).json({
+        error: 'Valittu käyttäjä on jo ylläpitäjä'
+      })
+    }
+
+    if (result.status === 'promoted') {
+      return res.status(200).json({
+        status: 'promoted',
+        message: 'Jäsenelle annettiin ylläpitäjän oikeudet'
+      })
+    }
+
+    throw new Error(`Unexpected promote-admin result: ${result.status}`)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const removeGroupMemberController = async (req, res, next) => {
+  const id = Number(req.params.id)
+  const memberId = Number(req.params.memberId)
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ error: 'Virheellinen ryhmän ID' })
+  }
+
+  if (!Number.isInteger(memberId) || memberId < 1) {
+    return res.status(400).json({ error: 'Virheellinen jäsenen ID' })
+  }
+
+  try {
+    const result = await removeGroupMember(id, req.user.id, memberId)
+
+    if (result.status === 'not_found') {
+      return res.status(404).json({ error: 'Ryhmää ei löytynyt' })
+    }
+
+    if (result.status === 'not_admin') {
+      return res.status(403).json({ error: 'Vain ylläpitäjä voi poistaa jäseniä' })
+    }
+
+    if (result.status === 'target_not_member') {
+      return res.status(404).json({ error: 'Käyttäjä ei ole ryhmän jäsen' })
+    }
+
+    if (result.status === 'target_not_regular_member') {
+      return res.status(409).json({ error: 'Ylläpitäjää ei voi poistaa tällä toiminnolla' })
+    }
+
+    if (result.status === 'removed') {
+      return res.status(200).json({
+        status: 'removed',
+        message: 'Jäsen poistettiin ryhmästä'
+      })
+    }
+
+    throw new Error(`Unexpected remove-member result: ${result.status}`)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export { getGroup,
+   getGroups,
+    postGroup,
+     getGroupMembersController,
+      joinGroupController,
+       leaveGroupController,
+        transferAdminController,
+         removeGroupMemberController }
