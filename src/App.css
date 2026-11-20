@@ -677,6 +677,7 @@ body {
 .list-buttons {
  position: absolute;
  bottom: 50px;
+}
  
 .back-btn {
   background: none;
