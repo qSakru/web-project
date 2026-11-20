@@ -7,29 +7,31 @@ const options = {
 }
 
 export const searchMovies = async (req, res, next) => {
-  const { query, year } = req.query
+  const { query, year, page = 1 } = req.query
 
   if (!query?.trim()) {
-    return res.json({ results: [] })
+    return res.json({ results: [], page: 1, total_pages: 1 })
   }
 
   try {
     // Tarkistaa onko pelkkä vuosi (4 numeroa) annettu hakusana
     const isYear = /^\d{4}$/.test(query.trim())
-    
     let results = []
+    let totalPages = 1
 
     if (isYear) {
-      // Hakee elokuvat, jotka on julkaistu kyseisenä vuonna
-      const url = `https://api.themoviedb.org/3/discover/movie?primary_release_year=${query.trim()}&sort_by=popularity.desc&language=fi-FI`
+      // vuosihaku + sivutus
+      const url = `https://api.themoviedb.org/3/discover/movie?primary_release_year=${query.trim()}&sort_by=popularity.desc&language=fi-FI&page=${page}`
       const response = await fetch(url, options)
       if (!response.ok) throw new Error("Failed to fetch API data")
       const data = await response.json()
+      
       results = data.results || []
+      totalPages = data.total_pages || 1
 
     } else {
-      // Normaali haku (elokuvat + henkilöt)
-      let url = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}&include_adult=false&language=fi-FI`
+      // nimihaku + sivutus
+      let url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&include_adult=false&language=fi-FI&page=${page}`
       if (year) {
         url += `&primary_release_year=${year}`
       }
@@ -38,25 +40,27 @@ export const searchMovies = async (req, res, next) => {
       if (!response.ok) throw new Error("Failed to fetch API data")
       const data = await response.json()
 
-      const multiResults = data.results || []
+      results = data.results || []
+      totalPages = data.total_pages || 1
 
-      // Henkilöhaku: jos tuloksesta löytyy henkilö, haetaan hänen elokuvansa ja näytetään ne
-      const person = multiResults.find(item => item.media_type === 'person')
+      // henkilötulos = hae filmografia
+      const multiUrl = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}&language=fi-FI`
+      const multiRes = await fetch(multiUrl, options)
+      const multiData = await multiRes.json()
+      const person = multiData.results?.find(item => item.media_type === 'person')
 
-      if (person) {
+      if (person && page == 1) {
         const creditsUrl = `https://api.themoviedb.org/3/person/${person.id}/movie_credits?language=fi-FI`
         const creditsRes = await fetch(creditsUrl, options)
         const creditsData = await creditsRes.json()
 
         results = (creditsData.cast || [])
           .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
-      } else {
-        // Pelkät elokuvat
-        results = multiResults.filter(item => item.media_type === 'movie')
+        totalPages = 1
       }
     }
 
-    res.json({ results })
+    res.json({ results, page: Number(page), total_pages: totalPages })
   } catch (error) {
     next(error)
   }

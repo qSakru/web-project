@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 
 function Elokuvasivu() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [movie, setMovie] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -35,6 +36,9 @@ function Elokuvasivu() {
 
   return (
     <div className="main-content">
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        ← Takaisin
+      </button>
       <div className="movie-detail">
         {posterUrl && (
           <img src={posterUrl} alt={movie.title} className="movie-detail-poster" />
