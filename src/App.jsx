@@ -19,11 +19,11 @@ function App() {
   const navigate = useNavigate()
 
   const [notification, setNotification] = useState("")
-  const [wishlist, setWishlist] = useState(()=> {
-    const savedList = localStorage.getItem("wishlist")
+  const [list, setList] = useState(()=> {
+    const savedLists = localStorage.getItem("lists")
 
-    if (savedList) {
-      return JSON.parse(savedList)
+    if (savedLists) {
+      return JSON.parse(savedLists)
     } else {
       return []
     }
@@ -83,18 +83,28 @@ function App() {
   }
 
   function addMovie(movie){
-    setWishlist([...wishlist, movie])
+    const checkList = list.some(
+      item => item.id === movie.id
+    )
+
+    if (checkList){
+      setNotification("ELokuva on jo listalla")
+      return
+    }
+
+    setList([...list, movie])
     setNotification("Elokuva lisätty")
   }
 
   function removeMovie(id){
-    setWishlist(wishlist.filter(movie => movie.id !== id))
+    setList(list.filter(movie => movie.id !== id))
     setNotification("Elokuva poistettu listalta")
   }
 
+
   useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-}, [wishlist]);
+    localStorage.setItem("lists", JSON.stringify(list));
+}, [list]);
 
   useEffect(() => {
     if (!notification) return
@@ -173,7 +183,7 @@ function App() {
         />
         <Route path="/Ryhmät" element={<Ryhmät />} />
         <Route path="/Ryhmät/:id" element={<Ryhmäsivu />} />
-        <Route path="/Listat" element={<Listat wishlist={wishlist} removeMovie={removeMovie}/>} />
+        <Route path="/Listat" element={<Listat list={list} removeMovie={removeMovie}/>} />
         <Route path="/Kirjaudu" element={<Kirjaudu />} />
         <Route path="/elokuva/:id" element={<Elokuvasivu />} />
       </Routes>
