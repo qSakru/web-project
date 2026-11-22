@@ -167,12 +167,13 @@ function App() {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
+              addMovie={addMovie}
             />
           } 
         />
         <Route path="/Ryhmät" element={<Ryhmät />} />
         <Route path="/Ryhmät/:id" element={<Ryhmäsivu />} />
-        <Route path="/Listat" element={<Listat />} />
+        <Route path="/Listat" element={<Listat wishlist={wishlist} removeMovie={removeMovie}/>} />
         <Route path="/Kirjaudu" element={<Kirjaudu />} />
         <Route path="/elokuva/:id" element={<Elokuvasivu />} />
       </Routes>
