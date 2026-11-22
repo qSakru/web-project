@@ -2,17 +2,17 @@
 import MovieCard from "../components/MovieCard"
 import "../App.css"
 
-function Listat({ wishlist = [], removeMovie }) {
+function Listat({ list = [], removeMovie }) {
 
     return (
         <>
             <h1>Toivelista</h1>
 
             <div className="wishlist">
-                {wishlist.length === 0 ? (
+                {list.length === 0 ? (
                     <p>Toivelistasi on tyhjä.</p>
                 ) : (
-                    wishlist.map(movie => (
+                    list.map(movie => (
                         <MovieCard 
                             key={movie.id}
                             movie={movie}
