@@ -36,7 +36,9 @@ function Navbar({ searchQuery, setSearchQuery, handleSearch, resetSearch }) {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo" onClick={() => { resetSearch?.(); closeMenu() }} style={{ cursor: 'pointer' }}>
+          <NavLink to="/" onClick={resetSearch}>
           Elokuvasovellus
+          </NavLink>
         </div>
 
         {/* Desktop-haku */}

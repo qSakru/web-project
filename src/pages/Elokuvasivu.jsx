@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate} from 'react-router-dom'
 import axios from 'axios'
+import ReviewSection from '../components/ReviewSection'
 
 function Elokuvasivu() {
   const { id } = useParams()
@@ -90,8 +91,8 @@ function Elokuvasivu() {
           )}
         </div>
       </div>
+      <ReviewSection movieId={movie.id} />
     </div>
   )
 }
-
 export default Elokuvasivu

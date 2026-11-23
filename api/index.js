@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url'
 import tmdbRouter from './routes/tmdbRouter.js'
 import authRoutes from './routes/auth.js'
 import groupRouter from './routes/groupRouter.js'
+import reviewRoutes from './routes/reviewRoutes.js'
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -27,6 +28,7 @@ app.use("/api/auth", authRoutes)
 app.use('/api/tests', testRouter)
 app.use('/api/groups', groupRouter)
 app.use(express.static(path.join(__dirname, '../dist')))
+app.use('/api/reviews', reviewRoutes)
 
 
 

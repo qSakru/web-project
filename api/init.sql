@@ -31,4 +31,14 @@ CREATE TABLE group_members (
     PRIMARY KEY (group_id, user_id)
 );
 
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  movie_id INTEGER NOT NULL,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, movie_id)
+);
+
 INSERT INTO test (description) VALUES ('bar'), ('baz'), ('qux');
