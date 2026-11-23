@@ -461,22 +461,6 @@ body {
   font-size: 0.95rem;
 }
 
-.logout-btn {
-  background: none;
-  border: 1px solid #26A3D6;
-  color: #26A3D6;
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.logout-btn:hover {
-  background: #26A3D6;
-  color: white;
-}
-
 /*hakuehdotukset*/
 .suggestions {
   position: absolute;
@@ -569,6 +553,7 @@ body {
   margin: 0.5rem 0 1rem;
   color: #8097b2;
   font-size: 1.05rem;
+  flex-wrap: wrap;
 }
 
 .movie-meta .rating {
@@ -603,6 +588,7 @@ body {
   margin-bottom: 0.5rem;
   scrollbar-width: thin;
   scrollbar-color: #26A3D6 #101925;
+  -webkit-overflow-scrolling: touch;
 }
 
 .cast-list::-webkit-scrollbar {
@@ -657,37 +643,14 @@ body {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 0.5rem;
+  background: #20334d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #26A3D6;
 }
 
-@media (max-width: 900px) {
-  .movie-detail {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1.5rem;
-  }
-  .movie-detail-poster {
-    width: 240px;
-  }
-  .movie-meta {
-    justify-content: center;
-  }
-  .overview {
-    max-width: 100%;
-  }
-}
-
-.wishlist {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px;
-}
-
-.list-buttons {
- position: absolute;
- bottom: 50px;
-}
- 
 .back-btn {
   background: none;
   border: 1px solid #26A3D6;
@@ -698,7 +661,7 @@ body {
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
   display: block;
-  margin-left: 57.5px;
+  margin-left: 0;
   margin-right: auto;
   transition: all 0.2s;
 }
@@ -707,6 +670,132 @@ body {
   background: #26A3D6;
   color: white;
 }
+
+/* review section */
+.review-section {
+  margin-top: 2.5rem;
+  padding: 1.2rem;
+  background: #142030;
+  border-radius: 10px;
+  text-align: left;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.review-section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #e8f0f7;
+}
+
+.average-stars {
+  color: #26A3D6;
+  font-size: 1.1rem;
+  margin-left: 0.4rem;
+}
+
+.average-number {
+  color: #8097b2;
+  font-size: 0.95rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.star {
+  color: #20334d;
+  transition: color 0.15s;
+  user-select: none;
+}
+
+.star.filled {
+  color: #26A3D6;
+}
+
+.review-form {
+  margin-bottom: 1.5rem;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #20334d;
+  background: #101925;
+  color: #e8f0f7;
+  font-family: inherit;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+}
+
+.review-form textarea:focus {
+  border-color: #26A3D6;
+  box-shadow: 0 0 0 2px rgba(38, 163, 214, 0.2);
+}
+
+.review-form button {
+  background: #26A3D6;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.review-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-prompt {
+  color: #8097b2;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.reviews-list {
+  margin-top: 1rem;
+}
+
+.review-item {
+  background: #101925;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.review-stars {
+  color: #26A3D6;
+}
+
+.review-comment {
+  margin: 0.4rem 0;
+  line-height: 1.5;
+}
+
+.review-date {
+  color: #8097b2;
+  font-size: 0.8rem;
+}
+
 /* pages */
 .pagination {
   display: flex;
@@ -735,111 +824,85 @@ body {
   color: #a0b1c5;
 }
 
-/* review section */
-.review-section {
-  margin-top: 3rem;
-  text-align: left;
-  max-width: 800px;
+.wishlist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 25px;
 }
 
-.star-rating {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  cursor: pointer;
+.list-buttons {
+  position: absolute;
+  bottom: 50px;
 }
 
-.star {
-  color: #20334d;
-  transition: color 0.15s;
+/* Mobiili - elokuvasivu ja arvostelut */
+@media (max-width: 900px) {
+  .movie-detail {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .movie-detail-poster {
+    width: 220px;
+  }
+
+  .movie-detail-info {
+    text-align: left;
+    width: 100%;
+  }
+
+  .movie-detail-info h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .movie-meta {
+    justify-content: center;
+  }
+
+  .genres {
+    text-align: center;
+  }
+
+  .overview {
+    max-width: 100%;
+  }
+
+  .review-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+
+  .star-rating {
+    justify-content: center;
+    font-size: 2.2rem;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .back-btn {
+    margin-left: 0;
+  }
 }
 
-.star.filled {
-  color: #26A3D6;
-}
+@media (max-width: 480px) {
+  .movie-detail-poster {
+    width: 180px;
+  }
 
-.review-form textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #20334d;
-  background: #101925;
-  color: #e8f0f7;
-  font-family: inherit;
-  margin-bottom: 1rem;
-  box-sizing: border-box;
-}
+  .star-rating {
+    font-size: 2rem;
+  }
 
-.review-form button {
-  background: #26A3D6;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.review-item {
-  background: #142030;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.review-stars {
-  color: #26A3D6;
-}
-
-.review-comment {
-  margin: 0.5rem 0;
-  line-height: 1.5;
-}
-
-.review-date {
-  color: #8097b2;
-}
-
-.login-prompt {
-  color: #8097b2;
-  font-style: italic;
-}
-
-.review-form textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #20334d;
-  background: #101925;
-  color: #e8f0f7;
-  font-family: inherit;
-  margin-bottom: 1rem;
-  box-sizing: border-box;
-  outline: none;
-}
-
-.review-form textarea:focus {
-  border-color: #26A3D6;
-  box-shadow: 0 0 0 2px rgba(38, 163, 214, 0.2);
-}
-
-.review-form {
-  margin-bottom: 1rem;
-}
-
-.average-stars {
-  color: #26A3D6;
-  font-size: 2rem;
-  margin-left: 0.5rem;
-}
-
-.average-number {
-  color: #8097b2;
-  font-size: 1.25rem;
+  .review-section h2 {
+    font-size: 1.1rem;
+    text-align: center;
+  }
 }
