@@ -2,7 +2,7 @@
 import { pool } from './db.js'
 
 // luo ryhmän ja lisää luojan ylläpitäjäksi, dollarimerkit suojaavat SQL-injektioilta
-const createGroup = async (name, description, userId) => {
+const createGroup = async (name, description, isPrivate, userId) => {
   const client = await pool.connect()
 
   try {
@@ -10,10 +10,10 @@ const createGroup = async (name, description, userId) => {
 
     // luo ryhmä
     const groupResult = await client.query(
-      `INSERT INTO movie_groups (name, description, created_by)
-       VALUES ($1, $2, $3)
+      `INSERT INTO movie_groups (name, description, created_by, is_private)
+       VALUES ($1, $2, $3, $4)
        RETURNING *`,
-      [name, description, userId]
+      [name, description, userId, isPrivate]
     )
 
     const group = groupResult.rows[0]
@@ -88,13 +88,28 @@ const joinGroup = async (groupId, userId) => {
     await client.query('BEGIN')
 
     const groupResult = await client.query(
-      `SELECT id FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      `SELECT id, is_private FROM movie_groups WHERE id = $1 FOR UPDATE`,
       [groupId]
     )
     if (groupResult.rows.length === 0) {
       await client.query('COMMIT')
       return { status: 'not_found' }
     }
+
+    const memberResult = await client.query(
+      `SELECT 1 FROM group_members WHERE group_id = $1 AND user_id = $2`,
+      [groupId, userId]
+    )
+    if (memberResult.rows.length > 0) {
+      await client.query('COMMIT')
+      return { status: 'already_member' }
+    }
+
+    if (groupResult.rows[0].is_private) {
+      await client.query('COMMIT')
+      return { status: 'private_group' }
+    }
+
     // lisää käyttäjän jäseneksi
     const result = await client.query (
       `INSERT INTO group_members (group_id, user_id, role)
@@ -108,6 +123,156 @@ const joinGroup = async (groupId, userId) => {
       return { status: 'already_member' }
     }
     return { status: 'joined' }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+const createGroupJoinRequest = async (groupId, userId) => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const groupResult = await client.query(
+      `SELECT id, is_private FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      [groupId]
+    )
+    if (groupResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_found' }
+    }
+
+    if (!groupResult.rows[0].is_private) {
+      await client.query('COMMIT')
+      return { status: 'public_group' }
+    }
+
+    const memberResult = await client.query(
+      `SELECT 1 FROM group_members WHERE group_id = $1 AND user_id = $2`,
+      [groupId, userId]
+    )
+    if (memberResult.rows.length > 0) {
+      await client.query('COMMIT')
+      return { status: 'already_member' }
+    }
+
+    const result = await client.query(
+      `INSERT INTO group_join_requests (group_id, user_id, status)
+       VALUES ($1, $2, 'pending')
+       ON CONFLICT (group_id, user_id)
+       DO UPDATE SET status = 'pending', requested_at = NOW()
+       WHERE group_join_requests.status <> 'pending'
+       RETURNING user_id`,
+      [groupId, userId]
+    )
+
+    await client.query('COMMIT')
+    return result.rows.length > 0
+      ? { status: 'requested' }
+      : { status: 'already_pending' }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+const getGroupJoinRequest = async (groupId, userId) => {
+  const result = await pool.query(
+    `SELECT status
+     FROM group_join_requests
+     WHERE group_id = $1 AND user_id = $2`,
+    [groupId, userId]
+  )
+  return result.rows[0] || null
+}
+
+const getGroupJoinRequests = async (groupId, currentUserId) => {
+  const result = await pool.query(
+    `SELECT
+       group_join_requests.user_id AS id,
+       users.username,
+       group_join_requests.requested_at
+     FROM group_join_requests
+     JOIN users ON users.id = group_join_requests.user_id
+     JOIN group_members
+       ON group_members.group_id = group_join_requests.group_id
+      AND group_members.user_id = $2
+      AND group_members.role = 'admin'
+     WHERE group_join_requests.group_id = $1
+       AND group_join_requests.status = 'pending'
+     ORDER BY group_join_requests.requested_at`,
+    [groupId, currentUserId]
+  )
+  return result.rows
+}
+
+const reviewGroupJoinRequest = async (groupId, currentUserId, requesterId, decision) => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const groupResult = await client.query(
+      `SELECT id, is_private FROM movie_groups WHERE id = $1 FOR UPDATE`,
+      [groupId]
+    )
+    if (groupResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'not_found' }
+    }
+
+    const adminResult = await client.query(
+      `SELECT role
+       FROM group_members
+       WHERE group_id = $1 AND user_id = $2
+       FOR UPDATE`,
+      [groupId, currentUserId]
+    )
+    if (adminResult.rows.length === 0 || adminResult.rows[0].role !== 'admin') {
+      await client.query('COMMIT')
+      return { status: 'not_admin' }
+    }
+
+    const requestResult = await client.query(
+      `SELECT status
+       FROM group_join_requests
+       WHERE group_id = $1 AND user_id = $2
+       FOR UPDATE`,
+      [groupId, requesterId]
+    )
+    if (requestResult.rows.length === 0) {
+      await client.query('COMMIT')
+      return { status: 'request_not_found' }
+    }
+    if (requestResult.rows[0].status !== 'pending') {
+      await client.query('COMMIT')
+      return { status: 'request_already_reviewed' }
+    }
+
+    if (decision === 'approve') {
+      await client.query(
+        `INSERT INTO group_members (group_id, user_id, role)
+         VALUES ($1, $2, 'member')
+         ON CONFLICT (group_id, user_id) DO NOTHING`,
+        [groupId, requesterId]
+      )
+    }
+
+    await client.query(
+      `UPDATE group_join_requests
+       SET status = $3
+       WHERE group_id = $1 AND user_id = $2`,
+      [groupId, requesterId, decision === 'approve' ? 'approved' : 'rejected']
+    )
+
+    await client.query('COMMIT')
+    return { status: decision === 'approve' ? 'approved' : 'rejected' }
   } catch (error) {
     await client.query('ROLLBACK')
     throw error
@@ -343,6 +508,10 @@ export {
   getGroupById,
   getGroupMembers,
   joinGroup,
+  createGroupJoinRequest,
+  getGroupJoinRequest,
+  getGroupJoinRequests,
+  reviewGroupJoinRequest,
   leaveGroup,
   promoteMemberToAdmin,
   removeGroupMember

@@ -9,6 +9,7 @@ function Ryhmät() {
     const [error, setError] = useState(null)
     const [newGroupName, setNewGroupName] = useState('')
     const [description, setDescription] = useState('')
+    const [isPrivate, setIsPrivate] = useState(false)
     const [creatingGroup, setCreatingGroup] = useState(false)
 
     //ryhmien haku käyttäjälle
@@ -42,12 +43,17 @@ const handleCreateGroup = async (e) => {
         setError(null)
         console.log("lähetetään pyyntö ryhmän luomiseksi:", newGroupName, description)
 
-        const res = await api.post('/groups', { name: newGroupName.trim(), description: description.trim() })
+        const res = await api.post('/groups', {
+            name: newGroupName.trim(),
+            description: description.trim(),
+            isPrivate
+        })
         console.log("ryhmä luotu onnistuneesti:", res.data)
 
         setGroups([...groups, res.data])
         setNewGroupName('')
         setDescription('')
+        setIsPrivate(false)
 
     } catch (err) {
     console.error('Ryhmän luonti epäonnistui:', err.response?.data || err.message)
@@ -92,6 +98,14 @@ const handleCreateGroup = async (e) => {
         value={newGroupName}
         onChange={(e) => setNewGroupName(e.target.value)}
       />
+      <label>
+        <input
+          type="checkbox"
+          checked={isPrivate}
+          onChange={(e) => setIsPrivate(e.target.checked)}
+        />
+        Yksityinen ryhmä (liittyminen vaatii ylläpitäjän hyväksynnän)
+      </label>
       <input
         id="description"
         type="text"

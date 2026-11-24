@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 export default function GroupMembershipActions({
   user,
   membership,
+  groupIsPrivate,
+  joinRequestStatus,
   memberCount,
   hasOtherAdmin,
   authLoading,
@@ -12,6 +14,7 @@ export default function GroupMembershipActions({
   notice,
   disabled,
   onJoin,
+  onRequestJoin,
   onLeave
 }) {
   return (
@@ -24,9 +27,24 @@ export default function GroupMembershipActions({
         </p>
       )}
       {!authLoading && !authError && user && !membership && (
-        <button type="button" onClick={onJoin} disabled={disabled}>
-          {actionLoading ? 'Liitytään...' : 'Liity ryhmään'}
-        </button>
+        groupIsPrivate ? (
+          joinRequestStatus === 'pending' ? (
+            <p role="status">Liittymispyyntö odottaa ylläpitäjän hyväksyntää.</p>
+          ) : (
+            <>
+              {joinRequestStatus === 'rejected' && (
+                <p>Aiempi liittymispyyntö hylättiin. Voit lähettää uuden pyynnön.</p>
+              )}
+              <button type="button" onClick={onRequestJoin} disabled={disabled}>
+                {actionLoading ? 'Lähetetään pyyntöä...' : 'Pyydä liittymistä'}
+              </button>
+            </>
+          )
+        ) : (
+          <button type="button" onClick={onJoin} disabled={disabled}>
+            {actionLoading ? 'Liitytään...' : 'Liity ryhmään'}
+          </button>
+        )
       )}
       {!authLoading && !authError && user && membership?.role === 'member' && (
         <button type="button" onClick={onLeave} disabled={disabled}>

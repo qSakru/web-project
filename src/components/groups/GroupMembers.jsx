@@ -6,7 +6,9 @@ export default function GroupMembers({
   currentUserRole,
   actionLoading,
   onPromoteMember,
-  onRemoveMember
+  onRemoveMember,
+  joinRequests = [],
+  onReviewJoinRequest
 }) {
   const [openMemberId, setOpenMemberId] = useState(null)
 
@@ -71,6 +73,36 @@ export default function GroupMembers({
             </li>
           ))}
         </ul>
+      )}
+      {canManageMembers && (
+        <section aria-labelledby="group-join-requests-title">
+          <h4 id="group-join-requests-title">Liittymispyynnöt</h4>
+          {joinRequests.length === 0 ? (
+            <p>Ei odottavia liittymispyyntöjä.</p>
+          ) : (
+            <ul>
+              {joinRequests.map((request) => (
+                <li key={request.id}>
+                  {request.username}
+                  <button
+                    type="button"
+                    onClick={() => onReviewJoinRequest(request.id, 'approve')}
+                    disabled={actionLoading}
+                  >
+                    Hyväksy
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onReviewJoinRequest(request.id, 'reject')}
+                    disabled={actionLoading}
+                  >
+                    Hylkää
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       )}
     </div>
   )

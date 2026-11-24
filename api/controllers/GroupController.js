@@ -5,7 +5,11 @@ import { createGroup,
     joinGroup,
     leaveGroup,
      promoteMemberToAdmin,
-     removeGroupMember } from '../models/Group.js'
+     removeGroupMember,
+     createGroupJoinRequest,
+     getGroupJoinRequest,
+     getGroupJoinRequests,
+     reviewGroupJoinRequest } from '../models/Group.js'
 
 const getGroups = async (req, res, next) => {
   try {
@@ -36,7 +40,7 @@ const getGroup = async (req, res, next) => {
 
 const postGroup = async (req, res, next) => {
   try {
-    const { name, description } = req.body
+    const { name, description, isPrivate = false } = req.body
 
     // Tarkistetaan, että ryhmällä on nimi
     if (typeof name !== 'string' || !name.trim()) {
@@ -44,10 +48,13 @@ const postGroup = async (req, res, next) => {
         error: 'Ryhmän nimi on pakollinen'
       })
     }
+    if (typeof isPrivate !== 'boolean') {
+      return res.status(400).json({ error: 'Ryhmän yksityisyysvalinta on virheellinen' })
+    }
 
     const userId = req.user.id
 
-    const group = await createGroup(name.trim(), description, userId)
+    const group = await createGroup(name.trim(), description, isPrivate, userId)
 
     res.status(201).json(group)
   } catch (error) {
@@ -97,6 +104,10 @@ const joinGroupController = async (req, res, next) => {
       return res.status(409).json({ error: 'Olet jo ryhmän jäsen' })
     }
 
+    if (result.status === 'private_group') {
+      return res.status(409).json({ error: 'Yksityiseen ryhmään liittyminen vaatii ylläpitäjän hyväksynnän' })
+    }
+
     if (result.status === 'joined') {
       return res.status(201).json({
         status: 'joined',
@@ -105,6 +116,120 @@ const joinGroupController = async (req, res, next) => {
     }
 
     throw new Error(`Unexpected join-group result: ${result.status}`)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const createGroupJoinRequestController = async (req, res, next) => {
+  const id = Number(req.params.id)
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ error: 'Virheellinen ryhmän ID' })
+  }
+
+  try {
+    const result = await createGroupJoinRequest(id, req.user.id)
+    if (result.status === 'not_found') {
+      return res.status(404).json({ error: 'Ryhmää ei löytynyt' })
+    }
+    if (result.status === 'public_group') {
+      return res.status(409).json({ error: 'Julkiseen ryhmään voi liittyä suoraan' })
+    }
+    if (result.status === 'already_member') {
+      return res.status(409).json({ error: 'Olet jo ryhmän jäsen' })
+    }
+    if (result.status === 'already_pending') {
+      return res.status(409).json({ error: 'Liittymispyyntösi odottaa jo käsittelyä' })
+    }
+    if (result.status === 'requested') {
+      return res.status(201).json({
+        status: 'pending',
+        message: 'Liittymispyyntö lähetettiin ylläpitäjälle'
+      })
+    }
+    throw new Error(`Unexpected create-join-request result: ${result.status}`)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getGroupJoinRequestController = async (req, res, next) => {
+  const id = Number(req.params.id)
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ error: 'Virheellinen ryhmän ID' })
+  }
+
+  try {
+    const group = await getGroupById(id)
+    if (!group) {
+      return res.status(404).json({ error: 'Ryhmää ei löytynyt' })
+    }
+    const request = await getGroupJoinRequest(id, req.user.id)
+    res.status(200).json({ status: request?.status || null })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getGroupJoinRequestsController = async (req, res, next) => {
+  const id = Number(req.params.id)
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ error: 'Virheellinen ryhmän ID' })
+  }
+
+  try {
+    const group = await getGroupById(id)
+    if (!group) {
+      return res.status(404).json({ error: 'Ryhmää ei löytynyt' })
+    }
+    const membership = await getGroupMembers(id)
+    if (!membership.some((member) =>
+      String(member.id) === String(req.user.id) && member.role === 'admin'
+    )) {
+      return res.status(403).json({ error: 'Vain ryhmän ylläpitäjä voi nähdä liittymispyynnöt' })
+    }
+    const requests = await getGroupJoinRequests(id, req.user.id)
+    res.status(200).json(requests)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const reviewGroupJoinRequestController = async (req, res, next) => {
+  const id = Number(req.params.id)
+  const requesterId = Number(req.params.userId)
+  const decision = req.body?.decision
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ error: 'Virheellinen ryhmän ID' })
+  }
+  if (!Number.isInteger(requesterId) || requesterId < 1) {
+    return res.status(400).json({ error: 'Virheellinen käyttäjän ID' })
+  }
+  if (decision !== 'approve' && decision !== 'reject') {
+    return res.status(400).json({ error: 'Virheellinen liittymispyynnön päätös' })
+  }
+
+  try {
+    const result = await reviewGroupJoinRequest(id, req.user.id, requesterId, decision)
+    if (result.status === 'not_found') {
+      return res.status(404).json({ error: 'Ryhmää ei löytynyt' })
+    }
+    if (result.status === 'not_admin') {
+      return res.status(403).json({ error: 'Vain ryhmän ylläpitäjä voi käsitellä liittymispyyntöjä' })
+    }
+    if (result.status === 'request_not_found') {
+      return res.status(404).json({ error: 'Liittymispyyntöä ei löytynyt' })
+    }
+    if (result.status === 'request_already_reviewed') {
+      return res.status(409).json({ error: 'Liittymispyyntö on jo käsitelty' })
+    }
+    res.status(200).json({
+      status: result.status,
+      message: decision === 'approve'
+        ? 'Liittymispyyntö hyväksyttiin'
+        : 'Liittymispyyntö hylättiin'
+    })
   } catch (error) {
     next(error)
   }
@@ -262,4 +387,8 @@ export { getGroup,
       joinGroupController,
        leaveGroupController,
         transferAdminController,
-         removeGroupMemberController }
+          removeGroupMemberController,
+          createGroupJoinRequestController,
+          getGroupJoinRequestController,
+          getGroupJoinRequestsController,
+          reviewGroupJoinRequestController }
