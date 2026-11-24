@@ -21,6 +21,7 @@ CREATE TABLE movie_groups (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     created_by INTEGER REFERENCES users(id),
+    is_private BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -30,6 +31,16 @@ CREATE TABLE group_members (
     role VARCHAR(50) NOT NULL,
     PRIMARY KEY (group_id, user_id)
 );
+
+CREATE TABLE group_join_requests (
+    group_id INTEGER REFERENCES movie_groups(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'approved', 'rejected')),
+    requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (group_id, user_id)
+);
+
 
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,

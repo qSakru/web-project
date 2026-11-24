@@ -18,6 +18,9 @@ export default function Ryhmäsivu() {
   const [actionLoading, setActionLoading] = useState(false)
   const [actionError, setActionError] = useState(null)
   const [notice, setNotice] = useState(null)
+  const [joinRequestStatus, setJoinRequestStatus] = useState(null)
+  const [joinRequests, setJoinRequests] = useState([])
+  const [joinRequestError, setJoinRequestError] = useState(null)
 
   const fetchGroupData = useCallback(async () => {
     const [groupResponse, membersResponse] = await Promise.all([
@@ -205,6 +208,101 @@ export default function Ryhmäsivu() {
   const currentMembership = user
     ? members.find((member) => String(member.id) === String(user.id))
     : null
+
+  useEffect(() => {
+    let active = true
+
+    if (!user || loading || error) {
+      setJoinRequestStatus(null)
+      setJoinRequests([])
+      setJoinRequestError(null)
+      return () => {
+        active = false
+      }
+    }
+
+    const fetchJoinRequestData = async () => {
+      try {
+        const statusResponse = await api.get(`/groups/${id}/join-request`)
+        if (active) {
+          setJoinRequestStatus(statusResponse.data.status)
+          setJoinRequestError(null)
+        }
+
+        if (currentMembership?.role === 'admin') {
+          const requestsResponse = await api.get(`/groups/${id}/join-requests`)
+          if (active) {
+            setJoinRequests(requestsResponse.data)
+          }
+        } else if (active) {
+          setJoinRequests([])
+        }
+      } catch (err) {
+        console.error('Liittymispyyntöjen haku epäonnistui:', err.response?.data || err.message)
+        if (active) {
+          setJoinRequestError('Liittymispyyntötietojen hakeminen epäonnistui.')
+        }
+      }
+    }
+
+    fetchJoinRequestData()
+    return () => {
+      active = false
+    }
+  }, [id, user, currentMembership?.role, members, loading, error])
+
+  const handleRequestJoin = async () => {
+    setActionLoading(true)
+    setActionError(null)
+    setNotice(null)
+
+    try {
+      const response = await api.post(`/groups/${id}/join-requests`)
+      setJoinRequestStatus(response.data.status)
+      setNotice(response.data.message)
+    } catch (err) {
+      console.error('Liittymispyynnön lähettäminen epäonnistui:', err.response?.data || err.message)
+      setActionError(err.response?.data?.error || 'Liittymispyynnön lähettäminen epäonnistui.')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleReviewJoinRequest = async (requesterId, decision) => {
+    setActionLoading(true)
+    setActionError(null)
+    setNotice(null)
+
+    let response
+    try {
+      response = await api.put(
+        `/groups/${id}/join-requests/${requesterId}`,
+        { decision }
+      )
+    } catch (err) {
+      console.error('Liittymispyynnön käsittely epäonnistui:', err.response?.data || err.message)
+      setActionError(err.response?.data?.error || 'Liittymispyynnön käsittely epäonnistui.')
+      setActionLoading(false)
+      return
+    }
+
+    setNotice(response.data.message)
+    try {
+      const [groupData, requestsResponse] = await Promise.all([
+        fetchGroupData(),
+        api.get(`/groups/${id}/join-requests`)
+      ])
+      setGroup(groupData.group)
+      setMembers(groupData.members)
+      setJoinRequests(requestsResponse.data)
+    } catch (err) {
+      console.error('Tiedot eivät päivittyneet liittymispyynnön käsittelyn jälkeen:', err.response?.data || err.message)
+      setActionError('Pyyntö käsiteltiin, mutta ryhmätietojen päivitys epäonnistui. Päivitä sivu.')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
   const membershipActionsDisabled = actionLoading || loading || Boolean(error)
   const hasOtherAdmin = members.some(
     (member) => member.role === 'admin' && String(member.id) !== String(user?.id)
@@ -229,6 +327,8 @@ export default function Ryhmäsivu() {
         <GroupMembershipActions
           user={user}
           membership={currentMembership}
+          groupIsPrivate={Boolean(group?.is_private)}
+          joinRequestStatus={joinRequestStatus}
           memberCount={members.length}
           hasOtherAdmin={hasOtherAdmin}
           authLoading={authLoading}
@@ -238,8 +338,10 @@ export default function Ryhmäsivu() {
           notice={notice}
           disabled={membershipActionsDisabled}
           onJoin={() => handleMembershipAction('join')}
+          onRequestJoin={handleRequestJoin}
           onLeave={() => handleMembershipAction('leave')}
         />
+        {joinRequestError && <p role="alert">{joinRequestError}</p>}
       </div>
 
       {!loading && !error && (
@@ -252,6 +354,8 @@ export default function Ryhmäsivu() {
               actionLoading={membershipActionsDisabled}
               onPromoteMember={handlePromoteMember}
               onRemoveMember={handleRemoveMember}
+              joinRequests={joinRequests}
+              onReviewJoinRequest={handleReviewJoinRequest}
             />
           </aside>
 
