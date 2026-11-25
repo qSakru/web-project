@@ -4,6 +4,7 @@ import api from '../services/api'
 import GroupMembers from '../components/groups/GroupMembers'
 import GroupMembershipActions from '../components/groups/GroupMembershipActions'
 import './Ryhmäsivu.css'
+import GroupChat from '../components/groups/GroupChat'
 
 export default function Ryhmäsivu() {
   const { id } = useParams()
@@ -359,10 +360,19 @@ export default function Ryhmäsivu() {
             />
           </aside>
 
-          <section className="group-panel group-layout__chat" aria-labelledby="group-chat-title">
-            <h2 id="group-chat-title">Chat</h2>
-            <p>Chatin toteutus tulee myöhemmin.</p>
-          </section>
+          <section className="group-panel group-layout__chat">
+  {currentMembership ? (
+    <GroupChat
+      groupId={id}
+      currentUserId={user?.id}
+    />
+  ) : (
+    <>
+      <h2>Ryhmächat</h2>
+      <p>Liity ryhmään nähdäksesi keskustelun.</p>
+    </>
+  )}
+</section>
 
           <aside className="group-panel group-layout__reviews" aria-labelledby="group-reviews-title">
             <h2 id="group-reviews-title">Elokuva-arvostelut ja muu sisältö</h2>
