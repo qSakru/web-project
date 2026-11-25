@@ -10,8 +10,9 @@ removeGroupMemberController,
 createGroupJoinRequestController,
 getGroupJoinRequestController,
 getGroupJoinRequestsController,
-reviewGroupJoinRequestController } from '../controllers/GroupController.js'
+reviewGroupJoinRequestController, } from '../controllers/GroupController.js'
 import { authenticate } from '../middleware/auth.js'
+import { getGroupMessagesController, createGroupMessageController } from '../controllers/GroupMessagesController.js'
 
 
 const router = Router()
@@ -19,6 +20,9 @@ const router = Router()
 router.get('/', getGroups)
 router.get('/:id', getGroup)
 router.get('/:id/members', getGroupMembersController)
+
+router.get('/:id/messages', authenticate, getGroupMessagesController)
+router.post('/:id/messages', authenticate, createGroupMessageController)
 
 
 router.post('/', authenticate, postGroup)
@@ -32,5 +36,6 @@ router.delete('/:id/leave', authenticate, leaveGroupController)
 router.delete('/:id/members/:memberId', authenticate, removeGroupMemberController)
 
 router.put('/:id/admin', authenticate, transferAdminController)
+
 
 export default router
