@@ -1011,3 +1011,175 @@ body {
     gap: 0.3rem;
   }
 }
+/* ryhmät-sivu */
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.page h1 {
+  color: #e8f0f7;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.groups-layout {
+  display: flex;
+  justify-content: center;
+  gap: 25rem;
+  align-items: flex-start;
+}
+
+/* omat ryhmät vasen*/
+.groups-list {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.groups-list h2 {
+  color: #e8f0f7;
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+.groups-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.groups-list li {
+  width: 100%;
+  max-width: 280px;
+}
+.groups-list li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  background: #142030;
+  border: 1px solid #20334d;
+  border-radius: 6px;
+  color: #e8f0f7;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-align: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.groups-list li a:hover {
+  background: #1a2a3d;
+  border-color: #26A3D6;
+  color: #26A3D6;
+}
+
+.empty-text {
+  color: #8097b2;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.lock-icon {
+  margin-left: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* ryhmän luonti oikea */
+.groups-create {
+  width: 360px;
+  flex-shrink: 0;
+  background: #142030;
+  border: 1px solid #20334d;
+  border-radius: 12px;
+  padding: 1.6rem 1.5rem 1.8rem;
+}
+
+.groups-create h2 {
+  color: #e8f0f7;
+  font-size: 1.25rem;
+  margin: 0 0 1.3rem;
+  text-align: center;
+}
+
+.groups-create form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.groups-create input[type="text"] {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #20334d;
+  border-radius: 6px;
+  background: #0b1622;
+  color: #e8f0f7;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.groups-create input[type="text"]:focus {
+  outline: none;
+  border-color: #26A3D6;
+}
+
+.groups-create label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #a0b1c5;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.groups-create input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #26A3D6;
+}
+
+.groups-create button {
+  margin-top: 0.3rem;
+  padding: 0.75rem;
+  background: #26A3D6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.groups-create button:hover:not(:disabled) {
+  background: #1a8bb8;
+}
+
+.groups-create button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* mobiilin ryhmät-sivu */
+@media (max-width: 750px) {
+  .groups-layout {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .groups-create {
+    width: 100%;
+  }
+}
