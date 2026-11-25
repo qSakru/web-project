@@ -86,9 +86,9 @@ function Ryhmät() {
       )}
 
       <div className="groups-layout">
-        {/* omat ryhmät vasen */}
+        {/* ryhmät vasen */}
         <div className="groups-list">
-          <h2>Omat ryhmät</h2>
+          <h2>Elokuvasovelluksen ryhmät</h2>
 
           {!loading && !error && groups.length === 0 && (
             <p className="empty-text">Et kuulu vielä mihinkään ryhmään. Luo uusi ryhmä tai liity olemassa olevaan.</p>
