@@ -1,0 +1,49 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24.x'
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Create .env from .env.example
+      run: cp .env.example .env
+    - name: Start application with Docker Compose
+      run: docker compose up -d --build
+    - name: Wait for backend and frontend
+      run: |
+        for i in $(seq 1 60); do
+          if curl -sf http://localhost:3000/api/health > /dev/null && curl -sf http://localhost:5173 > /dev/null; then
+            echo "Application is ready!"
+            exit 0
+          fi
+          sleep 2
+        done
+        echo "Timed out waiting for application to start"
+        docker compose logs
+        exit 1
+    - name: Run Playwright tests
+      run: npx playwright test
+    - name: Print Docker logs on failure
+      if: failure()
+      run: docker compose logs
+    - name: Stop Docker Compose
+      if: always()
+      run: docker compose down -v
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
