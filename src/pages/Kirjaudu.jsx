@@ -39,16 +39,18 @@ function Kirjaudu() {
         <h1>{isLogin ? 'Kirjaudu' : 'Rekisteröidy'}</h1>
 
         <form onSubmit={handleSubmit}>
-          <label>Käyttäjätunnus</label>
+          <label htmlFor="auth-username">Käyttäjätunnus</label>
           <input
+            id="auth-username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
 
-          <label>Salasana</label>
+          <label htmlFor="auth-password">Salasana</label>
           <input
+            id="auth-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
